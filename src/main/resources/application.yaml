@@ -1,0 +1,40 @@
+spring:
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/lms_system}
+    username: ${DATABASE_USER:postgres}
+    password: ${DATABASE_PASSWORD:root123}
+    driver-class-name: org.postgresql.Driver
+
+
+  messages:
+    basename: messages
+    encoding: UTF-8
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: true
+  servlet:
+    multipart:
+      max-file-size: 5MB
+application:
+  image-source: /home/abbos/Documents/temp/storage
+  max-image-size: 5000000
+  domen: http://localhost:8080
+  security:
+    jwt:
+      secret-key: ${SECRET_KEY:4EC5E5C0D5F6E2669F44B4E68BE7D5359803D68B938548C25E012FBFC0A8B3EB}
+      expiration: ${JWT_EXPIRATION:86400000}
+      refresh-token:
+        expiration: ${JWT_REFRESH_EXPIRATION:604800000}
+
+
+springdoc:
+  swagger-ui:
+    doc-expansion: none
+    default-models-expand-depth: -1
+server:
+  servlet:
+    context-path: /api
+
+
