@@ -3,17 +3,11 @@ package com.example.lmssystem.servise;
 import com.example.lmssystem.config.security.CustomUserDetails;
 import com.example.lmssystem.entity.User;
 import com.example.lmssystem.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-
-import java.util.Collection;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -26,26 +20,29 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> authUserOptional = repository.findByUserna   meAndDeletedFalse(username);
+        Optional<User> authUserOptional = repository.findByUsernameAndDeletedFalse(username);
         if (authUserOptional.isEmpty()) {
             return null;
         }
 
-        AuthUser authUser = authUserOptional.get();
+        User authUser = authUserOptional.get();
         return CustomUserDetails.builder()
-                .username(authUser.getUsername())
                 .id(authUser.getId())
-                .canLogin(authUser.getCanLogin())
+                .username(authUser.getUsername())
                 .password(authUser.getPassword())
-                .authorities(getAuthorities(authUser.getRole()))
+                .firstName(authUser.getFirstName())
+                .lastName(authUser.getLastName())
+                .canLogin(authUser.getCanLogin())
+                .birthDate(authUser.getBirthDate())
+                .branchId(authUser.getBranch().getId())
+                .imageUrl(authUser.getImageUrl())
+                .phoneNumber(authUser.getPhoneNumber())
+                .roleId(authUser.getRole().getId())
+                .gender(authUser.getGender().toString())
                 .locale(authUser.getLocale())
+                .passwordSize(authUser.getPasswordSize())
                 .build();
     }
 
-    private Collection<? extends GrantedAuthority> getAuthorities(Role role) {
-        return role.getPermissions().stream()
-                .map(permission -> new SimpleGrantedAuthority(permission.getCode()))
-                .collect(Collectors.toSet());
 
-    }
 }

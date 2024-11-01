@@ -1,5 +1,6 @@
 package com.example.lmssystem.config.security;
 
+import com.example.lmssystem.servise.CustomUserDetailsService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -7,7 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import uz.olmossoft.crmproject.service.CustomUserDetailsService;
+
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
@@ -24,9 +25,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
-
         CustomUserDetails user = userDetailsService.loadUserByUsername(username);
-
         if (user != null && !user.getCanLogin()) {
             throw new BadCredentialsException("Forbidden!");
         } else if (user == null || !passwordEncoder.matches(password, user.getPassword())) {

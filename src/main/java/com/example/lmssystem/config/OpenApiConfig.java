@@ -14,13 +14,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "Clinic CRM system API",
-                description = "API for Clinics CRM system",
+                title = "LMS System",
+                description = "API for LMS system",
                 version = "1.0",
                 contact = @Contact(
-                        name = "Olmos Soft",
-                        email = "olomossoft@gamil.com",
-                        url = "https://olmos.soft.uz/api"
+                        name = "PDP_G43",
+                        email = "rejabovabbos605@gmail.com"
+
                 )
         ),
         servers = {
@@ -32,10 +32,7 @@ import org.springframework.context.annotation.Configuration;
                         description = "Global ENV",
                         url = "http://127.0.0.1:8080/api"
                 ),
-//                @Server(
-//                        description = "Prod ENV",
-//                        url = "https://crm-app.uz/api"
-//                ),
+
                 @Server(
                         description = "Dev ENV",
                         url = "https://crm-app.uz/dev-api"

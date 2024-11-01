@@ -1,5 +1,7 @@
 package com.example.lmssystem.config.security;
 
+import com.example.lmssystem.servise.CustomUserDetailsService;
+import com.example.lmssystem.utils.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -9,8 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import uz.olmossoft.crmproject.service.CustomUserDetailsService;
-import uz.olmossoft.crmproject.utils.Constants;
+
 
 @Configuration
 @EnableWebSecurity
@@ -28,6 +29,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http
 //                .cors().disable()
                 .csrf().disable()
