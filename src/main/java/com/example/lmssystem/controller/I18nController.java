@@ -26,5 +26,10 @@ public class I18nController {
                 .message(HttpStatus.OK.toString())
                 .build()
         );
+
+    }
+    @PutMapping
+    public ResponseEntity<?> updateLanguage() {
+        return ResponseEntity.ok(Utils.getMessage("user_not_found"));
     }
 }

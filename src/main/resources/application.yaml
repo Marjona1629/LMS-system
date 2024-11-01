@@ -23,10 +23,9 @@ application:
   domen: http://localhost:8080
   security:
     jwt:
-      secret-key: ${SECRET_KEY:4EC5E5C0D5F6E2669F44B4E68BE7D5359803D68B938548C25E012FBFC0A8B3EB}
+      secret-key: ${SECRET_KEY:jnfvjnejnvejnvjenvjnnsjncwwndcnwincencjdjnejrvkwjwefwefwegf}
       expiration: ${JWT_EXPIRATION:86400000}
-      refresh-token:
-        expiration: ${JWT_REFRESH_EXPIRATION:604800000}
+
 
 
 springdoc:
@@ -37,6 +36,10 @@ server:
   servlet:
     context-path: /api
 git:
-  token: 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
+  token: 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
 
+
+
+$2a$10$iPlZZfCne18CmXAfWFSGOuX8ZEtYaRDIct8bam/buq/1:
+  rv0IRfLK:
 
