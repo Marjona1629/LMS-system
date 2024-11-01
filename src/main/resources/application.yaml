@@ -36,5 +36,7 @@ springdoc:
 server:
   servlet:
     context-path: /api
+git:
+  token: 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
 
 
