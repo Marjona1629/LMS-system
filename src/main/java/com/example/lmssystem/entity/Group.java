@@ -21,7 +21,7 @@ public class Group {
     private String name;
     private String description;
     @ManyToOne
-    private User techer;
+    private User teacher;
     private LocalTime startTime;
     private Double duration;
     private String status;
