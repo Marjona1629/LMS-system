@@ -28,8 +28,5 @@ public class I18nController {
         );
 
     }
-    @PutMapping
-    public ResponseEntity<?> updateLanguage() {
-        return ResponseEntity.ok(Utils.getMessage("user_not_found"));
-    }
+
 }
