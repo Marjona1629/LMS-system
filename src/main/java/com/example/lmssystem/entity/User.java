@@ -35,6 +35,7 @@ public class User implements UserDetails {
     private Boolean canLogin;
     @Temporal(value = TemporalType.TIMESTAMP)
     private Date birthDate;
+    private Boolean deleted;
     private String locale="en";
 
 

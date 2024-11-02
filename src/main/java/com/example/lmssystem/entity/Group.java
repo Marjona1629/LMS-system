@@ -13,7 +13,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
+@Table(name = "groups")
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,7 +21,7 @@ public class Group {
     private String name;
     private String description;
     @ManyToOne
-    private User techer;
+    private User teacher;
     private LocalTime startTime;
     private Double duration;
     private String status;
