@@ -25,6 +25,7 @@ public class FinanceController {
         return ResponseEntity.ok(ResponseData.builder()
                 .message(HttpStatus.OK.toString())
                 .data(createdFinance)
+                .success(true)
                 .build()
         );
     }
@@ -35,6 +36,7 @@ public class FinanceController {
         return ResponseEntity.ok(ResponseData.builder()
                 .message(HttpStatus.OK.toString())
                 .data(finances)
+                .success(true)
                 .build()
         );
     }
@@ -45,6 +47,7 @@ public class FinanceController {
         return ResponseEntity.ok(ResponseData.builder()
                 .message(HttpStatus.OK.toString())
                 .data(finance)
+                .success(true)
                 .build()
         );    }
 
@@ -54,6 +57,7 @@ public class FinanceController {
         return ResponseEntity.ok(ResponseData.builder()
                 .message(HttpStatus.OK.toString())
                 .data(updatedFinance)
+                .success(true)
                 .build()
         );
     }
@@ -63,6 +67,7 @@ public class FinanceController {
         financeService.deleteFinance(id);
         return ResponseEntity.ok(ResponseData.builder()
                 .message(HttpStatus.OK.toString())
+                .success(true)
                 .build()
         );
     }
