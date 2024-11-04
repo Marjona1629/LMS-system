@@ -25,7 +25,7 @@ public class CustomUserDetails implements UserDetails {
     private Integer passwordSize;
     private String imageUrl;
     private Long roleId;
-    private Long branchId;
+    private List<Long> branches;
     private Boolean canLogin;
     private String gender;
     private Date birthDate;

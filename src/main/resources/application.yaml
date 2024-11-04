@@ -12,7 +12,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     open-in-view: true
   servlet:
     multipart:
@@ -38,8 +38,4 @@ server:
 git:
   token: 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
 
-
-
-$2a$10$iPlZZfCne18CmXAfWFSGOuX8ZEtYaRDIct8bam/buq/1:
-  rv0IRfLK:
 

@@ -10,26 +10,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+
 @RestController
-@CrossOrigin("*")
-@RequestMapping("/v1")
 @RequiredArgsConstructor
+@RequestMapping("/language")
 public class I18nController {
 
     private final I18nServise i18nServise;
 
-    @PutMapping("/language")
+    @PutMapping
     public ResponseEntity<?> greeting(@RequestParam(name = "lang", required = false) String lang) {
         CustomUserDetails customUserDetails = Utils.sessionUser();
         i18nServise.updateLanguage(customUserDetails.getId(), lang);
         return ResponseEntity.ok(ResponseData.builder()
-                .message(HttpStatus.OK.toString())
+                        .success(true)
+                        .data(null)
+                .message(Utils.getMessage("language_updated"))
                 .build()
         );
 
     }
-    @PutMapping
-    public ResponseEntity<?> updateLanguage() {
-        return ResponseEntity.ok(Utils.getMessage("user_not_found"));
-    }
+
 }
