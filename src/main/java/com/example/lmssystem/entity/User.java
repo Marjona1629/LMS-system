@@ -2,11 +2,16 @@ package com.example.lmssystem.entity;
 
 import com.example.lmssystem.enums.Gender;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -14,6 +19,9 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,10 +34,10 @@ public class User implements UserDetails {
     private String password;
     private Integer passwordSize;
     private String imageUrl;
-    @ManyToOne
-    private Role role;
-    @ManyToOne
-    private Branch branch;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Role> role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Branch> branches;
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private Boolean canLogin;
@@ -41,7 +49,14 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (Role role1 : role) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_"+role1.getName()));
+            for (Permission permission : role1.getPermissions()) {
+                authorities.add(new SimpleGrantedAuthority(permission.getName()));
+            }
+        }
+        return authorities;
     }
 
     @Override
@@ -54,14 +69,4 @@ public class User implements UserDetails {
         return username;
     }
 
-    @OneToMany(mappedBy = "user")
-    private Collection<Invoice> invoice;
-
-    public Collection<Invoice> getInvoice() {
-        return invoice;
-    }
-
-    public void setInvoice(Collection<Invoice> invoice) {
-        this.invoice = invoice;
-    }
 }

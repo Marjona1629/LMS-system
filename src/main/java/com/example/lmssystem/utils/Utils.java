@@ -23,8 +23,10 @@ import java.util.UUID;
 @Component
 public class Utils {
     private static final Random RANDOM = new Random();
-    @Autowired
     private static I18nServise i18n;
+    Utils(I18nServise i18nServise) {
+        this.i18n = i18nServise;
+    }
 
     public static String getMessage(String code){
         return i18n.getMessage(code);
@@ -62,7 +64,7 @@ public class Utils {
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            }
+                          }
 
         }
         return null;

@@ -14,6 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class GroupsController {
     @GetMapping
     public ResponseEntity<String> getGroups() {
-        return ResponseEntity.ok();
+        return ResponseEntity.ok("");
     }
 }
