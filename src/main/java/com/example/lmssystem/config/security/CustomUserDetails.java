@@ -22,7 +22,7 @@ public class CustomUserDetails implements UserDetails {
     private String firstName;
     private String lastName;
     private String password;
-    private Integer passwordSize;
+    private String passwordSize;
     private String imageUrl;
     private Long roleId;
     private List<Long> branches;

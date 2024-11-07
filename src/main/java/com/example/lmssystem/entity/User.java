@@ -32,7 +32,7 @@ public class User implements UserDetails {
     private String firstName;
     private String lastName;
     private String password;
-    private Integer passwordSize;
+    private String passwordSize;
     private String imageUrl;
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> role;

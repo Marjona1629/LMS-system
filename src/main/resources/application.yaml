@@ -28,6 +28,7 @@ application:
 
 
 
+
 springdoc:
   swagger-ui:
     doc-expansion: none
@@ -37,5 +38,5 @@ server:
     context-path: /api
 git:
   token: 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
-
+  username: AbbosRejabov2006
 

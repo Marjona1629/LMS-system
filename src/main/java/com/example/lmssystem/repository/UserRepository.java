@@ -13,7 +13,7 @@ public interface UserRepository extends JpaRepository<User,Long> {
     void updateLocale(Long id, String lang);
 
     @Query("update User set password=:password,username=:username,passwordSize=:passwordSize where id=:id")
-    void set(String password,String username,Integer passwordSize,Long id);
+    void set(String password,String username,String passwordSize,Long id);
 
     @Query("select u from User u where u.username=:username and u.deleted=false")
     Optional<User> findByUsernameAndDeletedFalse(String username);

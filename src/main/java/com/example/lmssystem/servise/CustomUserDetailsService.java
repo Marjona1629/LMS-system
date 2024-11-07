@@ -25,10 +25,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> authUserOptional = repository.findByUsernameAndDeletedFalse(username);
-        if (authUserOptional.isEmpty()) {
-
-            return null;
-        }
+        authUserOptional.orElseThrow();
         List<Long> branches=new ArrayList<>();
         User authUser = authUserOptional.get();
         for (Branch branch : authUser.getBranches()) {

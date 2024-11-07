@@ -46,7 +46,7 @@
 //
 //        User authUser = User.builder()
 //                .phoneNumber("+998900771820")
-//                .passwordSize(8)
+//                .passwordSize("8")
 //                .canLogin(true)
 //                .birthDate(new Date())
 //                .deleted(false)
