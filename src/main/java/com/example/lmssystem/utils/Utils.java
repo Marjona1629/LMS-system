@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -32,7 +33,10 @@ public class Utils {
         return i18n.getMessage(code);
     }
 
-
+    public static String getMessage(String code, Object... args) {
+        String message = i18n.getMessage(code);
+        return MessageFormat.format(message, args);
+    }
 
     public static CustomUserDetails sessionUser() {
         return ((CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
