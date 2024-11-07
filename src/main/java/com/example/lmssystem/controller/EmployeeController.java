@@ -26,7 +26,7 @@ public class EmployeeController {
         List<User> employees = userService.getAllEmployees();
         return ResponseData.builder()
                 .success(true)
-                .message(Utils.getMessage("employees_retrieved"))
+                .message(Utils.getMessage("employees_retrieved_success"))
                 .data(employees)
                 .build();
     }
@@ -36,7 +36,7 @@ public class EmployeeController {
         Optional<User> employee = userService.getEmployeeById(id);
         return employee.map(user -> ResponseData.builder()
                         .success(true)
-                        .message(Utils.getMessage("employee_retrieved"))
+                        .message(Utils.getMessage("employee_retrieved_success"))
                         .data(user)
                         .build())
                 .orElseGet(() -> ResponseData.builder()
@@ -52,7 +52,7 @@ public class EmployeeController {
         User addedEmployee = userService.addEmployee(user);
         return ResponseData.builder()
                 .success(true)
-                .message("Employee added successfully")
+                .message(Utils.getMessage("employee_added_success"))
                 .data(addedEmployee)
                 .build();
     }
@@ -62,7 +62,7 @@ public class EmployeeController {
         boolean isDeleted = userService.softDeleteEmployee(id);
         return isDeleted ? ResponseData.builder()
                 .success(true)
-                .message(Utils.getMessage("employee_deleted"))
+                .message(Utils.getMessage("employee_deleted_success"))
                 .data(null)
                 .build() : ResponseData.builder()
                 .success(false)
@@ -77,7 +77,7 @@ public class EmployeeController {
         Optional<User> updatedEmployee = userService.updateEmployee(id, updatedUser);
         return updatedEmployee.map(user -> ResponseData.builder()
                         .success(true)
-                        .message(Utils.getMessage("employee_updated"))
+                        .message(Utils.getMessage("employee_updated_success"))
                         .data(user)
                         .build())
                 .orElseGet(() -> ResponseData.builder()
