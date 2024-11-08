@@ -2,7 +2,6 @@ package com.example.lmssystem.transfer.auth;
 
 import com.example.lmssystem.entity.Role;
 import com.example.lmssystem.enums.Gender;
-import lombok.Data;
 
 import java.util.List;
 

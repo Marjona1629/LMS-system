@@ -36,8 +36,9 @@ public class User implements UserDetails {
     private String imageUrl;
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> role;
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<Branch> branches;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private Boolean canLogin;
