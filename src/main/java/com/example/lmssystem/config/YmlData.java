@@ -15,5 +15,4 @@ public class YmlData {
 
     @Value("${application.max-image-size:2000000}")
     private Integer maxImageSize;
-
 }

@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 import org.springframework.context.annotation.Configuration;
 
-
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
@@ -20,7 +19,6 @@ import org.springframework.context.annotation.Configuration;
                 contact = @Contact(
                         name = "PDP_G43",
                         email = "rejabovabbos605@gmail.com"
-
                 )
         ),
         servers = {

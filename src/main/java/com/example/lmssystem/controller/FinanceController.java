@@ -1,8 +1,8 @@
 package com.example.lmssystem.controller;
 
 import com.example.lmssystem.entity.Finance;
-import com.example.lmssystem.servise.FinanceService;
-import com.example.lmssystem.trnasfer.ResponseData;
+import com.example.lmssystem.service.FinanceService;
+import com.example.lmssystem.transfer.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

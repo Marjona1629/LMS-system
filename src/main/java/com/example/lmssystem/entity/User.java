@@ -45,8 +45,6 @@ public class User implements UserDetails {
     private Date birthDate;
     private Boolean deleted;
     private String locale="en";
-
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();
@@ -63,10 +61,8 @@ public class User implements UserDetails {
     public String getPassword() {
         return password;
     }
-
     @Override
     public String getUsername() {
         return username;
     }
-
 }

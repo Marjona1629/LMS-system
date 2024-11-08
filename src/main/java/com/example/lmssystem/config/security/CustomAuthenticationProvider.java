@@ -1,6 +1,6 @@
 package com.example.lmssystem.config.security;
 
-import com.example.lmssystem.servise.CustomUserDetailsService;
+import com.example.lmssystem.service.CustomUserDetailsService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {

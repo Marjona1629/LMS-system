@@ -1,7 +1,7 @@
 package com.example.lmssystem.controller;
 
-import com.example.lmssystem.servise.AuthServise;
-import com.example.lmssystem.trnasfer.auth.CreateUserDTO;
+import com.example.lmssystem.service.AuthServise;
+import com.example.lmssystem.transfer.auth.CreateUserDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.http.ResponseEntity;

@@ -1,23 +1,19 @@
-package com.example.lmssystem.servise;
+package com.example.lmssystem.service;
 
 import com.example.lmssystem.config.security.CustomUserDetails;
 import com.example.lmssystem.config.security.JwtProvider;
 import com.example.lmssystem.entity.User;
-import com.example.lmssystem.enums.Gender;
 import com.example.lmssystem.repository.BranchRepository;
 import com.example.lmssystem.repository.RoleRepository;
 import com.example.lmssystem.repository.UserRepository;
-import com.example.lmssystem.trnasfer.ResponseData;
-import com.example.lmssystem.trnasfer.auth.CreateUserDTO;
+import com.example.lmssystem.transfer.ResponseData;
+import com.example.lmssystem.transfer.auth.CreateUserDTO;
 import com.example.lmssystem.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 
 import org.springframework.stereotype.Service;
-
 
 import java.text.SimpleDateFormat;
 
@@ -38,7 +34,7 @@ public class AuthServise {
        User user =User.builder()
                .branches(List.of(branchRepository.findById(createUserDTO.branchId()).orElseThrow()))
                .deleted(false)
-               .gender(Gender.valueOf(createUserDTO.gender().toUpperCase()))
+               .gender(createUserDTO.gender())
                .firstName(createUserDTO.firstName())
                .lastName(createUserDTO.lastName())
                .role(List.of(roleRepository.findByName("USER").orElseThrow()))
@@ -87,5 +83,4 @@ public class AuthServise {
                 .build()
         );
     }
-
 }

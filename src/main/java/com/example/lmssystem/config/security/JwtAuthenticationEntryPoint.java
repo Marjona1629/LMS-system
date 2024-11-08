@@ -15,5 +15,4 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         response.setStatus(response.getStatus());
         response.getWriter().write("{\"message\": \"Please log in to access this resource.\"}");
     }
-
 }
