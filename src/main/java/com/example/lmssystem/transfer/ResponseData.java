@@ -1,4 +1,4 @@
-package com.example.lmssystem.trnasfer;
+package com.example.lmssystem.transfer;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.example.lmssystem.trnasfer;
+package com.example.lmssystem.transfer;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;

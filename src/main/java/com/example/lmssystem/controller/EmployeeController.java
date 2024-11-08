@@ -2,16 +2,21 @@ package com.example.lmssystem.controller;
 
 import com.example.lmssystem.entity.Branch;
 import com.example.lmssystem.entity.User;
-import com.example.lmssystem.servise.BranchService;
-import com.example.lmssystem.servise.UserService;
-import com.example.lmssystem.trnasfer.ResponseData;
-import com.example.lmssystem.trnasfer.auth.CreateUserDTO;
+import com.example.lmssystem.service.BranchService;
+import com.example.lmssystem.service.UserService;
+import com.example.lmssystem.transfer.ResponseData;
+import com.example.lmssystem.transfer.auth.CreateUserDTO;
 import com.example.lmssystem.utils.Utils;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
@@ -23,7 +28,26 @@ public class EmployeeController {
 
     @GetMapping
     public ResponseData showEmployees() {
-        List<User> employees = userService.getAllEmployees();
+        List<CreateUserDTO> employees = userService.getAllEmployees().stream()
+                .map(dto -> new CreateUserDTO(
+                        dto.id(),
+                        dto.firstName(),
+                        dto.lastName(),
+                        dto.phoneNumber(),
+                        dto.gender(),
+                        dto.birthDate(),
+                        dto.branchId(),
+                        null,
+                        dto.role()
+                ))
+                .collect(Collectors.toList());
+
+        if (employees.isEmpty()) {
+            return ResponseData.builder()
+                    .success(false)
+                    .message(Utils.getMessage("user.noEmployeesFound"))
+                    .build();
+        }
         return ResponseData.builder()
                 .success(true)
                 .message(Utils.getMessage("employees_retrieved_success"))
@@ -47,9 +71,11 @@ public class EmployeeController {
     }
 
     @PostMapping
+    @SneakyThrows
     public ResponseData addEmployee(@RequestBody CreateUserDTO createUserDTO) {
-        User user = convertToUser(createUserDTO); // Using a helper method to convert DTO to User
+        User user = convertToUser(createUserDTO);
         User addedEmployee = userService.addEmployee(user);
+
         return ResponseData.builder()
                 .success(true)
                 .message(Utils.getMessage("employee_added_success"))
@@ -72,26 +98,30 @@ public class EmployeeController {
     }
 
     @PutMapping("/{id}")
-    public ResponseData changeEmployee(@PathVariable Long id, @RequestBody CreateUserDTO updateUserDTO) {
+    @SneakyThrows
+    public ResponseEntity<ResponseData> changeEmployee(@PathVariable Long id, @RequestBody CreateUserDTO updateUserDTO) {
         User updatedUser = convertToUser(updateUserDTO);
         Optional<User> updatedEmployee = userService.updateEmployee(id, updatedUser);
-        return updatedEmployee.map(user -> ResponseData.builder()
-                        .success(true)
-                        .message(Utils.getMessage("employee_updated_success"))
-                        .data(user)
-                        .build())
-                .orElseGet(() -> ResponseData.builder()
-                        .success(false)
-                        .message(Utils.getMessage("employee_not_found"))
-                        .data(null)
-                        .build());
+
+        if (updatedEmployee.isPresent()) {
+            return ResponseEntity.ok(ResponseData.builder()
+                    .success(true)
+                    .message(Utils.getMessage("employee_updated_success"))
+                    .data(updatedEmployee.get())
+                    .build());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseData.builder()
+                    .success(false)
+                    .message(Utils.getMessage("employee_not_found"))
+                    .data(null)
+                    .build());
+        }
     }
 
     private List<Branch> fetchBranchesById(Long branchId) {
         Branch branch = branchService.getBranchById(branchId).orElse(null);
         return branch != null ? List.of(branch) : List.of();
     }
-
     private User convertToUser(CreateUserDTO createUserDTO) {
         return User.builder()
                 .firstName(createUserDTO.firstName())

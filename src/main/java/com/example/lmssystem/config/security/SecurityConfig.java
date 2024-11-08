@@ -1,6 +1,6 @@
 package com.example.lmssystem.config.security;
 
-import com.example.lmssystem.servise.CustomUserDetailsService;
+import com.example.lmssystem.service.CustomUserDetailsService;
 import com.example.lmssystem.utils.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

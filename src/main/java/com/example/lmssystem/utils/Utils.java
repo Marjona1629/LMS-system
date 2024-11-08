@@ -1,9 +1,7 @@
 package com.example.lmssystem.utils;
 
 import com.example.lmssystem.config.security.CustomUserDetails;
-import com.example.lmssystem.servise.I18nServise;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
+import com.example.lmssystem.service.I18nService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -14,18 +12,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DecimalFormat;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-
 @Component
 public class Utils {
     private static final Random RANDOM = new Random();
-    private static I18nServise i18n;
-    Utils(I18nServise i18nServise) {
+    private static I18nService i18n;
+    Utils(I18nService i18nServise) {
         this.i18n = i18nServise;
     }
 
@@ -68,12 +64,9 @@ public class Utils {
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
-                          }
+            }
 
         }
         return null;
     }
-
-
-
 }

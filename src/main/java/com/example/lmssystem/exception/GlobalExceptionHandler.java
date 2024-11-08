@@ -1,6 +1,6 @@
 package com.example.lmssystem.exception;
 
-import com.example.lmssystem.trnasfer.AppErrorResponse;
+import com.example.lmssystem.transfer.AppErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

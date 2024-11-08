@@ -1,4 +1,4 @@
-package com.example.lmssystem.servise;
+package com.example.lmssystem.service;
 
 import com.example.lmssystem.config.security.CustomUserDetails;
 import com.example.lmssystem.entity.Branch;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
@@ -51,6 +50,4 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .build();
         return build;
     }
-
-
 }
