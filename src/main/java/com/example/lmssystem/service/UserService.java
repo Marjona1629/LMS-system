@@ -171,4 +171,18 @@ public class UserService {
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
+
+    public CreateUserDTO mapToCreateUserDTO(User user) {
+        return new CreateUserDTO(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getPhoneNumber(),
+                user.getGender(),
+                user.getBirthDate() != null ? user.getBirthDate().toString() : null,
+                user.getBranches() != null ? user.getBranches().get(0).getId() : null,
+                user.getPassword(),
+                user.getRole()
+        );
+    }
 }

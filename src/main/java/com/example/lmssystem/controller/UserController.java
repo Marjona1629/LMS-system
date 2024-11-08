@@ -3,6 +3,7 @@ package com.example.lmssystem.controller;
 import com.example.lmssystem.entity.User;
 import com.example.lmssystem.service.UserService;
 import com.example.lmssystem.transfer.ResponseData;
+import com.example.lmssystem.transfer.auth.CreateUserDTO;
 import com.example.lmssystem.utils.Utils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,15 +23,19 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<ResponseData> getUserProfile(@PathVariable Long id) {
-        Optional<User> user = userService.getUserById(id);
+        Optional<User> userOptional = userService.getUserById(id);
 
-        return user.map(u -> ResponseEntity.ok(ResponseData.builder()
-                        .success(true)
-                        .message(Utils.getMessage("user.profile.retrieved_success"))
-                        .data(u)
-                        .build()))
+        return userOptional.map(user -> {
+                    CreateUserDTO userDTO = userService.mapToCreateUserDTO(user);
+                    return ResponseEntity.ok(ResponseData.builder()
+                            .success(true)
+                            .message(Utils.getMessage("user.profile.retrieved_success"))
+                            .data(userDTO)
+                            .build());
+                })
                 .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .body(ResponseData.builder()
                                 .success(false)
