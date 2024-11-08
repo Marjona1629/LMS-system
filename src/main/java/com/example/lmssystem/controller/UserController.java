@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/profile")
 public class UserController {
 
     private final UserService userService;
@@ -22,7 +22,7 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-    @GetMapping("/profile/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ResponseData> getUserProfile(@PathVariable Long id) {
         Optional<User> user = userService.getUserById(id);
 
