@@ -2,6 +2,7 @@ package com.example.lmssystem.controller;
 
 import com.example.lmssystem.entity.Invoice;
 import com.example.lmssystem.servise.InvoiceService;
+import com.example.lmssystem.trnasfer.InvoiceDTO;
 import com.example.lmssystem.trnasfer.ResponseData;
 
 import lombok.RequiredArgsConstructor;
@@ -13,15 +14,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/invoices")
+@RequestMapping("/invoices")
 @RequiredArgsConstructor
 public class InvoiceController {
 @Autowired
   private final InvoiceService invoiceService;
 
     @PostMapping
-    public ResponseEntity<?> createInvoice(@RequestBody Invoice invoice) {
-        Invoice newInvoice = invoiceService.saveInvoice(invoice);
+    public ResponseEntity<?> createInvoice(@RequestBody InvoiceDTO invoiceDTO) {
+        Invoice newInvoice = invoiceService.saveInvoice(invoiceDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ResponseData.builder()
                         .message("Invoice created successfully")
@@ -51,8 +52,8 @@ public class InvoiceController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateInvoice(@PathVariable Long id, @RequestBody Invoice invoiceDetails) {
-        Invoice updatedInvoice = invoiceService.updateInvoice(id, invoiceDetails);
+    public ResponseEntity<?> updateInvoice(@PathVariable Long id, @RequestBody InvoiceDTO invoiceDTO) {
+        Invoice updatedInvoice = invoiceService.updateInvoice(id, invoiceDTO);
         return ResponseEntity.ok(ResponseData.builder()
                 .message("Invoice updated successfully")
                 .data(updatedInvoice)

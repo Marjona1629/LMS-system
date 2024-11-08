@@ -2,6 +2,7 @@ package com.example.lmssystem.servise;
 
 import com.example.lmssystem.entity.Invoice;
 import com.example.lmssystem.repository.InvoiceRepository;
+import com.example.lmssystem.trnasfer.InvoiceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +13,7 @@ public class InvoiceService {
     @Autowired
     private InvoiceRepository invoiceRepository;
 
-    public Invoice saveInvoice(Invoice invoice) {
+    public Invoice saveInvoice(InvoiceDTO invoiceDTO) {
         return null;
     }
 
@@ -24,7 +25,7 @@ public class InvoiceService {
         return null;
     }
 
-    public Invoice updateInvoice(Long id, Invoice invoiceDetails) {
+    public Invoice updateInvoice(Long id, InvoiceDTO invoiceDTO) {
         return null;
     }
 
