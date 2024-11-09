@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/employees")
+@RequestMapping("/employees")
 public class EmployeeController {
 
     @Autowired
@@ -130,6 +130,29 @@ public class EmployeeController {
         }
     }
 
+    @GetMapping("/other-active")
+    public ResponseEntity<ResponseData> getOtherActiveEmployees() {
+        List<User> activeEmployees = userService.getOtherActiveEmployees();
+
+        if (!activeEmployees.isEmpty()) {
+            List<CreateUserDTO> employeesDTO = activeEmployees.stream()
+                    .map(userService::mapToCreateUserDTO)
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(ResponseData.builder()
+                    .success(true)
+                    .message(Utils.getMessage("user.employees.active.retrieved_success"))
+                    .data(employeesDTO)
+                    .build());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ResponseData.builder()
+                            .success(false)
+                            .message(Utils.getMessage("user.employees.active.not_found"))
+                            .data(null)
+                            .build());
+        }
+    }
 
     private User convertToUser(CreateUserDTO createUserDTO) {
         return User.builder()

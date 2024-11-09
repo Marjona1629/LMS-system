@@ -7,15 +7,14 @@ import com.example.lmssystem.transfer.auth.CreateUserDTO;
 import com.example.lmssystem.utils.Utils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/profile")
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
@@ -24,7 +23,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("profile/{id}")
     public ResponseEntity<ResponseData> getUserProfile(@PathVariable Long id) {
         Optional<User> userOptional = userService.getUserById(id);
 
