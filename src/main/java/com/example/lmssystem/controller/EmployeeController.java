@@ -22,9 +22,12 @@ import java.util.stream.Collectors;
 public class EmployeeController {
 
     @Autowired
-    private UserService userService;
-    @Autowired
     private BranchService branchService;
+    @Autowired
+    private UserService userService;
+    public EmployeeController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public ResponseData showEmployees() {
@@ -83,6 +86,15 @@ public class EmployeeController {
                 .build();
     }
 
+    @GetMapping("/search")
+    public List<CreateUserDTO> searchEmployees(
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
+            @RequestParam(required = false) String phoneNumber) {
+        return userService.searchEmployees(id, firstName, lastName, phoneNumber);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseData deleteEmployee(@PathVariable Long id) {
         boolean isDeleted = userService.softDeleteEmployee(id);
@@ -118,10 +130,7 @@ public class EmployeeController {
         }
     }
 
-    private List<Branch> fetchBranchesById(Long branchId) {
-        Branch branch = branchService.getBranchById(branchId).orElse(null);
-        return branch != null ? List.of(branch) : List.of();
-    }
+
     private User convertToUser(CreateUserDTO createUserDTO) {
         return User.builder()
                 .firstName(createUserDTO.firstName())
@@ -129,7 +138,13 @@ public class EmployeeController {
                 .phoneNumber(createUserDTO.phoneNumber())
                 .gender(createUserDTO.gender())
                 .birthDate(createUserDTO.birthDate() != null ? java.sql.Date.valueOf(createUserDTO.birthDate()) : null)
-                .branches(fetchBranchesById(createUserDTO.branchId()))
+                .branch(fetchBranchById(createUserDTO.branchId()))
+                .password(createUserDTO.password())
+                .role(createUserDTO.role())
                 .build();
+    }
+    private Branch fetchBranchById(Long branchId) {
+        return branchService.getBranchById(branchId)
+                .orElseThrow(() -> new IllegalArgumentException("Branch with ID " + branchId + " not found"));
     }
 }
