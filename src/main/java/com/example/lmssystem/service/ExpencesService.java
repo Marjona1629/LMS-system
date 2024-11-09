@@ -1,4 +1,4 @@
-package com.example.lmssystem.servise;
+package com.example.lmssystem.service;
 
 import com.example.lmssystem.entity.Expences;
 import com.example.lmssystem.repository.ExpencesRepository;
@@ -23,7 +23,7 @@ public class ExpencesService {
     }
 
     public Expences getExpencesById(Long id) {
-
+        return null;
     }
 
     public Expences updateExpences(Long id, ExpencesDTO expencesDTO) {

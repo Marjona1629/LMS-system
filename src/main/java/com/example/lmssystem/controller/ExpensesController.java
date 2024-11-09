@@ -1,7 +1,7 @@
 package com.example.lmssystem.controller;
 
 import com.example.lmssystem.entity.Expences;
-import com.example.lmssystem.servise.ExpencesService;
+import com.example.lmssystem.service.ExpencesService;
 import com.example.lmssystem.transfer.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

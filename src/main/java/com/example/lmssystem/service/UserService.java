@@ -1,7 +1,8 @@
 package com.example.lmssystem.service;
 
-import com.example.lmssystem.entity.User;
-import com.example.lmssystem.entity.Branch;
+import com.example.lmssystem.entity.*;
+import com.example.lmssystem.repository.PermissionRepository;
+import com.example.lmssystem.repository.RoleRepository;
 import com.example.lmssystem.repository.UserRepository;
 import com.example.lmssystem.transfer.auth.CreateUserDTO;
 import com.example.lmssystem.utils.Utils;
@@ -14,6 +15,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -107,7 +109,9 @@ public class UserService {
         return Optional.of(userRepository.save(existingUser));
     }
 
-
+    public List<User> getArchivedEmployees() {
+        return userRepository.findByDeletedTrue();
+    }
 
     private void validateEmployeeData(User user) {
         if (user.getFirstName() == null || user.getFirstName().isEmpty()) {
@@ -167,7 +171,9 @@ public class UserService {
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
-
+    public List<User> getActiveTeachers() {
+        return userRepository.findByRole_Name("TEACHER");
+    }
     public CreateUserDTO mapToCreateUserDTO(User user) {
         return new CreateUserDTO(
                 user.getId(),
@@ -193,5 +199,9 @@ public class UserService {
                 user.getPassword(),
                 user.getRole()
         );
+    }
+
+    public List<User> getOtherActiveEmployees() {
+        return userRepository.findByRole_NameNotIn(List.of("TEACHER", "ADMIN", "STUDENT"));
     }
 }

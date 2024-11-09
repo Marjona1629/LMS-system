@@ -35,4 +35,11 @@ public interface UserRepository extends JpaRepository<User,Long> {
                                @Param("firstName") String firstName,
                                @Param("lastName") String lastName,
                                @Param("phoneNumber") String phoneNumber);
+
+    List<User> findByDeletedTrue();
+
+    List<User> findByRole_Name(String roleName);
+
+    @Query("SELECT u FROM User u JOIN u.role r WHERE r.name NOT IN :roleNames")
+    List<User> findByRole_NameNotIn(@Param("roleNames") List<String> roleNames);
 }
