@@ -8,7 +8,5 @@ import java.util.Optional;
 
 public interface GroupRepository extends JpaRepository<Group, Long> {
     List<Group> findByTeacherId(Long teacherId);
-    List<Group> findByName(String name);
     Optional<Group> findById(Long id);
-    List<Group> findByIdAndName(Long id, String name);
 }
