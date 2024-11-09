@@ -2,6 +2,7 @@ package com.example.lmssystem.controller;
 
 import com.example.lmssystem.entity.Expences;
 import com.example.lmssystem.service.ExpencesService;
+import com.example.lmssystem.transfer.ExpencesDTO;
 import com.example.lmssystem.transfer.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +19,7 @@ public class ExpensesController {
     private ExpencesService expencesService;
 
     @PostMapping
-    public ResponseEntity<?> createExpenses(@RequestBody com.example.lmssystem.trnasfer.ExpencesDTO expencesDTO) {
+    public ResponseEntity<?> createExpenses(@RequestBody ExpencesDTO expencesDTO) {
         Expences newExpences = expencesService.saveExpences(expencesDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ResponseData.builder()
