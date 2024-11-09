@@ -39,7 +39,7 @@ public class EmployeeController {
                         dto.phoneNumber(),
                         dto.gender(),
                         dto.birthDate(),
-                        dto.branchId(),
+                        dto.branch(),
                         null,
                         dto.role()
                 ))
@@ -161,7 +161,7 @@ public class EmployeeController {
                 .phoneNumber(createUserDTO.phoneNumber())
                 .gender(createUserDTO.gender())
                 .birthDate(createUserDTO.birthDate() != null ? java.sql.Date.valueOf(createUserDTO.birthDate()) : null)
-                .branch(fetchBranchById(createUserDTO.branchId()))
+                .branch(fetchBranchById(createUserDTO.branch().getId()))
                 .password(createUserDTO.password())
                 .role(createUserDTO.role())
                 .build();

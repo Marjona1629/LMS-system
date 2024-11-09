@@ -21,8 +21,8 @@ import java.util.UUID;
 public class Utils {
     private static final Random RANDOM = new Random();
     private static I18nService i18n;
-    Utils(I18nService i18nServise) {
-        this.i18n = i18nServise;
+    Utils(I18nService i18nService) {
+        this.i18n = i18nService;
     }
 
     public static String getMessage(String code){
