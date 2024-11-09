@@ -24,7 +24,7 @@ public class GroupController {
         return groupService.getGroupsByTeacher(teacherId);
     }
 
-    @GetMapping("/groups")
+    @GetMapping("/show-all")
     public ResponseEntity<ResponseData> showGroups(
             @RequestParam(required = false) Long teacherId) {
         List<GroupDTO> groups = groupService.findGroups(teacherId);
