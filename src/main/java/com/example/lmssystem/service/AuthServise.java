@@ -32,7 +32,7 @@ public class AuthServise {
     public ResponseEntity<ResponseData> createUser(CreateUserDTO createUserDTO) throws Exception {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
        User user =User.builder()
-               .branches(List.of(branchRepository.findById(createUserDTO.branchId()).orElseThrow()))
+               .branch(createUserDTO.branch())
                .deleted(false)
                .gender(createUserDTO.gender())
                .firstName(createUserDTO.firstName())

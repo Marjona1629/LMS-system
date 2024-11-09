@@ -1,5 +1,6 @@
 package com.example.lmssystem.transfer.auth;
 
+import com.example.lmssystem.entity.Branch;
 import com.example.lmssystem.entity.Role;
 import com.example.lmssystem.enums.Gender;
 
@@ -12,7 +13,7 @@ public record CreateUserDTO(
         String phoneNumber,
         Gender gender,
         String birthDate,
-        Long branchId,
+        Branch branch,
         String password,
         List<Role> role
 ) {

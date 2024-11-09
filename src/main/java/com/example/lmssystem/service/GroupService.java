@@ -5,9 +5,7 @@ import com.example.lmssystem.repository.GroupRepository;
 import com.example.lmssystem.transfer.GroupDTO;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +32,6 @@ public class GroupService {
                 .map(this::toGroupDTO)
                 .collect(Collectors.toList());
     }
-
 
     private GroupDTO toGroupDTO(Group group) {
         if (group == null) {

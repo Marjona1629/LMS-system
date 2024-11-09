@@ -61,7 +61,7 @@ public class ShowEmployeeController {
                 .build());
     }
 
-    @GetMapping("/other-active")
+    @GetMapping("/active-others")
     public ResponseEntity<ResponseData> getOtherActiveEmployees() {
         List<User> activeEmployees = userService.getOtherActiveEmployees();
 

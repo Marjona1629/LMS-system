@@ -25,14 +25,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> authUserOptional = repository.findByUsernameAndDeletedFalse(username);
         if (authUserOptional.isEmpty()) {
-
             return null;
         }
-        List<Long> branches=new ArrayList<>();
         User authUser = authUserOptional.get();
-        for (Branch branch : authUser.getBranches()) {
-            branches.add(branch.getId());
-        }
         CustomUserDetails build = CustomUserDetails.builder()
                 .id(authUser.getId())
                 .username(authUser.getUsername())
@@ -41,7 +36,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .lastName(authUser.getLastName())
                 .canLogin(authUser.getCanLogin())
                 .birthDate(authUser.getBirthDate())
-                .branches(branches)
+                .branch(authUser.getBranch())
                 .imageUrl(authUser.getImageUrl())
                 .phoneNumber(authUser.getPhoneNumber())
                 .gender(authUser.getGender().toString())
