@@ -21,9 +21,6 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private BranchService branchService;
-
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -58,15 +55,59 @@ public class UserService {
 
     public User addEmployee(User user) {
         validateEmployeeData(user);
-
-        if (user.getBranches() != null && !user.getBranches().isEmpty()) {
-            List<Branch> validBranches = validateBranches(user.getBranches());
-            user.setBranches(validBranches);
+        if (user.getBranch() != null) {
+            Branch validBranch = validateBranch(user.getBranch());
+            user.setBranch(validBranch);
         } else {
-            throw new IllegalArgumentException(Utils.getMessage("user.branches.empty"));
+            throw new IllegalArgumentException("User must be assigned to at least one valid branch.");
         }
         return userRepository.save(user);
     }
+
+    public List<CreateUserDTO> searchEmployees(Long id, String firstName, String lastName, String phoneNumber) {
+        List<User> users = userRepository.searchEmployees(id, firstName, lastName, phoneNumber);
+        return users.stream()
+                .map(this::convertToCreateUserDTO)
+                .toList();
+    }
+
+    public boolean softDeleteEmployee(Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (userOptional.isPresent()) {
+            userRepository.softDeleteById(id);
+            return true;
+        } else {
+            throw new IllegalArgumentException(Utils.getMessage("user.employee.notFound", id));
+        }
+    }
+
+    public Optional<User> updateEmployee(Long id, User updatedUser) {
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User with ID " + id + " not found"));
+
+        updateFieldIfNotNull(updatedUser.getFirstName(), existingUser::setFirstName, "user.firstName.required");
+        updateFieldIfNotNull(updatedUser.getLastName(), existingUser::setLastName, "user.lastName.required");
+        updateFieldIfNotNull(updatedUser.getPhoneNumber(), existingUser::setPhoneNumber, "user.phoneNumber.required");
+
+        if (updatedUser.getBranch() != null) {
+            Branch validBranch = validateBranch(updatedUser.getBranch());
+            existingUser.setBranch(validBranch);
+        }
+        if (updatedUser.getPassword() != null) {
+            if (updatedUser.getPassword().length() >= 6) {
+                existingUser.setPassword(updatedUser.getPassword());
+            } else {
+                throw new IllegalArgumentException(Utils.getMessage("user.password.required"));
+            }
+        }
+        updateFieldIfNotNull(updatedUser.getRole(), existingUser::setRole);
+        updateFieldIfNotNull(updatedUser.getGender(), existingUser::setGender);
+        updateFieldIfNotNull(updatedUser.getBirthDate(), existingUser::setBirthDate);
+
+        return Optional.of(userRepository.save(existingUser));
+    }
+
+
 
     private void validateEmployeeData(User user) {
         if (user.getFirstName() == null || user.getFirstName().isEmpty()) {
@@ -103,48 +144,13 @@ public class UserService {
         String regex = "^\\+?[1-9]\\d{1,14}$";
         return phoneNumber != null && phoneNumber.matches(regex);
     }
-    private List<Branch> validateBranches(List<Branch> branches) {
-        List<Branch> validBranches = new ArrayList<>();
-        for (Branch branch : branches) {
-            Branch foundBranch = branchService.getBranchById(branch.getId()).orElse(null);
-            if (foundBranch != null) {
-                validBranches.add(foundBranch);
-            } else {
-                throw new IllegalArgumentException(Utils.getMessage("user.branches.invalid", branch.getId()));
-            }
+    private Branch validateBranch(Branch branch) {
+        if (branch == null || !branch.isValid()) {
+            throw new IllegalArgumentException("Invalid branch provided.");
         }
-        return validBranches;
+        return branch;
     }
 
-    public Optional<User> updateEmployee(Long id, User updatedUser) {
-        Optional<User> existingUserOptional = userRepository.findById(id);
-
-        if (existingUserOptional.isPresent()) {
-            User existingUser = existingUserOptional.get();
-
-            updateFieldIfNotNull(updatedUser.getFirstName(), existingUser::setFirstName, "user.firstName.required");
-            updateFieldIfNotNull(updatedUser.getLastName(), existingUser::setLastName, "user.lastName.required");
-            updateFieldIfNotNull(updatedUser.getPhoneNumber(), existingUser::setPhoneNumber, "user.phoneNumber.required");
-
-            if (updatedUser.getBranches() != null && !updatedUser.getBranches().isEmpty()) {
-                List<Branch> validBranches = validateBranches(updatedUser.getBranches());
-                existingUser.setBranches(validBranches);
-            }
-
-            if (updatedUser.getPassword() != null && updatedUser.getPassword().length() >= 6) {
-                existingUser.setPassword(updatedUser.getPassword());
-            } else {
-                throw new IllegalArgumentException(Utils.getMessage("user.password.required"));
-            }
-
-            updateFieldIfNotNull(updatedUser.getRole(), existingUser::setRole);
-            updateFieldIfNotNull(updatedUser.getGender(), existingUser::setGender);
-            updateFieldIfNotNull(updatedUser.getBirthDate(), existingUser::setBirthDate);
-
-            return Optional.of(userRepository.save(existingUser));
-        }
-        return Optional.empty();
-    }
     private <T> void updateFieldIfNotNull(T value, Consumer<T> setter) {
         if (value != null) {
             setter.accept(value);
@@ -155,16 +161,6 @@ public class UserService {
             setter.accept(value);
         } else if (errorMessage != null) {
             throw new IllegalArgumentException(Utils.getMessage(errorMessage));
-        }
-    }
-
-    public boolean softDeleteEmployee(Long id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isPresent()) {
-            userRepository.softDeleteById(id);
-            return true;
-        } else {
-            throw new IllegalArgumentException(Utils.getMessage("user.employee.notFound", id));
         }
     }
 
@@ -180,7 +176,20 @@ public class UserService {
                 user.getPhoneNumber(),
                 user.getGender(),
                 user.getBirthDate() != null ? user.getBirthDate().toString() : null,
-                user.getBranches() != null ? user.getBranches().get(0).getId() : null,
+                user.getBranch() != null ? user.getBranch().getId() : null,
+                user.getPassword(),
+                user.getRole()
+        );
+    }
+    private CreateUserDTO convertToCreateUserDTO(User user) {
+        return new CreateUserDTO(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getPhoneNumber(),
+                user.getGender(),
+                user.getBirthDate() != null ? user.getBirthDate().toString() : null,
+                user.getBranch() != null ? user.getBranch().getId() : null,
                 user.getPassword(),
                 user.getRole()
         );

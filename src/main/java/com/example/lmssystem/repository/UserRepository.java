@@ -25,4 +25,14 @@ public interface UserRepository extends JpaRepository<User,Long> {
     @Modifying
     @Query("UPDATE User u SET u.deleted = true WHERE u.id = :id")
     void softDeleteById(@Param("id") Long id);
+
+    @Query("SELECT u FROM User u WHERE "
+            + "(:id IS NULL OR u.id = :id) AND "
+            + "(:firstName IS NULL OR LOWER(u.firstName) LIKE LOWER(CONCAT('%', :firstName, '%'))) AND "
+            + "(:lastName IS NULL OR LOWER(u.lastName) LIKE LOWER(CONCAT('%', :lastName, '%'))) AND "
+            + "(:phoneNumber IS NULL OR u.phoneNumber LIKE CONCAT('%', :phoneNumber, '%'))")
+    List<User> searchEmployees(@Param("id") Long id,
+                               @Param("firstName") String firstName,
+                               @Param("lastName") String lastName,
+                               @Param("phoneNumber") String phoneNumber);
 }
