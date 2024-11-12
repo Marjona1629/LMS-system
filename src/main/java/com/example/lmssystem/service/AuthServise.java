@@ -25,7 +25,7 @@ public class AuthServise {
     private final RoleRepository roleRepository;
     private final BranchRepository branchRepository;
     private final UserRepository userRepository;
-    private final com.example.lmssystem.servise.CustomUserDetailsService customUserDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
     private final JwtProvider jwtProvider;
     private final AuthenticationManager authenticationManager;
 

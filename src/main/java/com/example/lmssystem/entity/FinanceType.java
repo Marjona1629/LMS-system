@@ -4,3 +4,4 @@ public enum FinanceType {
     SALARY,
     COURSE_PAYMENT
 }
+

@@ -1,4 +1,4 @@
-package com.example.lmssystem.servise;
+package com.example.lmssystem.service;
 
 import com.example.lmssystem.config.security.CustomUserDetails;
 import com.example.lmssystem.entity.Branch;
