@@ -182,7 +182,7 @@ public class UserService {
                 user.getPhoneNumber(),
                 user.getGender(),
                 user.getBirthDate() != null ? user.getBirthDate().toString() : null,
-                user.getBranch() != null ? user.getBranch().getId() : null,
+                user.getBranch() != null ? user.getBranch() : null,
                 user.getPassword(),
                 user.getRole()
         );
@@ -195,7 +195,7 @@ public class UserService {
                 user.getPhoneNumber(),
                 user.getGender(),
                 user.getBirthDate() != null ? user.getBirthDate().toString() : null,
-                user.getBranch() != null ? user.getBranch().getId() : null,
+                user.getBranch() != null ? user.getBranch() : null,
                 user.getPassword(),
                 user.getRole()
         );
