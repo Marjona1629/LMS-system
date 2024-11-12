@@ -22,5 +22,4 @@ public class Invoice {
     @ManyToOne
     private Group group;
     private String status;
-
 }

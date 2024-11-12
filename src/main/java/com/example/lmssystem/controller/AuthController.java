@@ -14,19 +14,16 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthServise authServise;
 
-//    @PostMapping("/create")
-//    @SneakyThrows
-//    public ResponseEntity<?> create(@RequestBody CreateUserDTO createUserDTO) {
-//        return authServise.createUser(createUserDTO);
-//    }
+    @PostMapping("/create")
+    @SneakyThrows
+    @PreAuthorize(value = "hasAnyAuthority('CREATOR')")
+    public ResponseEntity<?> create(@RequestBody CreateUserDTO createUserDTO) {
+        return authServise.createUser(createUserDTO);
+    }
 
     @PostMapping("/sign-in")
     public ResponseEntity<?> signIn( String username, String password) {
+
         return authServise.signIn(username, password);
     }
-
-//    @GetMapping("/profile")
-//    public ResponseEntity<?> getProfile() {
-//        return authServise.profile();
-//    }
 }

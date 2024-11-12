@@ -11,20 +11,16 @@ import java.util.Random;
 @Configuration
 public class AppConfig {
 
-
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
     @Bean
     public Random random() {
         return new Random();
     }
-
 }
