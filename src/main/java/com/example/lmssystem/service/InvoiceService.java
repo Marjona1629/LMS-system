@@ -1,4 +1,4 @@
-package com.example.lmssystem.servise;
+package com.example.lmssystem.service;
 
 import com.example.lmssystem.entity.Invoice;
 import com.example.lmssystem.repository.InvoiceRepository;
