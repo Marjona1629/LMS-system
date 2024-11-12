@@ -1,14 +1,16 @@
 package com.example.lmssystem.controller;
 
-import com.example.lmssystem.entity.Finance;
+
 import com.example.lmssystem.servise.FinanceService;
 import com.example.lmssystem.trnasfer.ResponseData;
+import com.example.lmssystem.trnasfer.auth.FinanceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @RequestMapping("/finance")
 public class FinanceController {
@@ -20,8 +22,8 @@ public class FinanceController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createFinance(@RequestBody Finance finance) {
-        Finance createdFinance = financeService.createFinance(finance);
+    public ResponseEntity<?> createFinance(@RequestBody FinanceDTO financeDTO) {
+        FinanceDTO createdFinance = financeService.createFinance(financeDTO);
         return ResponseEntity.ok(ResponseData.builder()
                 .message(HttpStatus.OK.toString())
                 .data(createdFinance)
@@ -32,7 +34,7 @@ public class FinanceController {
 
     @GetMapping
     public ResponseEntity<?> getAllFinances() {
-        List<Finance> finances = financeService.getAllFinances();
+        List<FinanceDTO> finances = financeService.getAllFinances();
         return ResponseEntity.ok(ResponseData.builder()
                 .message(HttpStatus.OK.toString())
                 .data(finances)
@@ -43,17 +45,18 @@ public class FinanceController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getFinanceById(@PathVariable Long id) {
-        Finance finance = financeService.getFinanceById(id);
+        FinanceDTO finance = financeService.getFinanceById(id);
         return ResponseEntity.ok(ResponseData.builder()
                 .message(HttpStatus.OK.toString())
                 .data(finance)
                 .success(true)
                 .build()
-        );    }
+        );
+    }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateFinance(@PathVariable Long id, @RequestBody Finance finance) {
-        Finance updatedFinance = financeService.updateFinance(id, finance);
+    public ResponseEntity<?> updateFinance(@PathVariable Long id, @RequestBody FinanceDTO financeDTO) {
+        FinanceDTO updatedFinance = financeService.updateFinance(id, financeDTO);
         return ResponseEntity.ok(ResponseData.builder()
                 .message(HttpStatus.OK.toString())
                 .data(updatedFinance)
