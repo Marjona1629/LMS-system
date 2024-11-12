@@ -1,4 +1,4 @@
-package com.example.lmssystem.servise;
+package com.example.lmssystem.service;
 
 import com.example.lmssystem.repository.UserRepository;
 import com.example.lmssystem.utils.Utils;
@@ -12,18 +12,15 @@ import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
-public class I18nServise {
+public class I18nService {
 
     private final MessageSource messageSource;
     private final UserRepository authUserRepository;
-
-
 
     @Transactional
     public void updateLanguage(Long id,String lang){
         authUserRepository.updateLocale(id,lang);
     }
-
 
     public String getMessage(String code) {
         return messageSource.getMessage(code,null,new Locale(Utils.sessionUser().getLocale()));

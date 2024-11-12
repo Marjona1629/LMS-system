@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 
-
 public class Room {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

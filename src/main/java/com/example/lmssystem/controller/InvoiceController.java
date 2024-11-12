@@ -1,9 +1,9 @@
 package com.example.lmssystem.controller;
 
 import com.example.lmssystem.entity.Invoice;
-import com.example.lmssystem.servise.InvoiceService;
-import com.example.lmssystem.trnasfer.InvoiceDTO;
-import com.example.lmssystem.trnasfer.ResponseData;
+import com.example.lmssystem.service.InvoiceService;
+import com.example.lmssystem.transfer.ResponseData;
+import com.example.lmssystem.transfer.InvoiceDTO;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ import java.util.List;
 @RequestMapping("/invoices")
 @RequiredArgsConstructor
 public class InvoiceController {
-@Autowired
   private final InvoiceService invoiceService;
 
     @PostMapping

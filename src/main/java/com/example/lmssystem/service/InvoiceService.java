@@ -1,8 +1,8 @@
-package com.example.lmssystem.servise;
+package com.example.lmssystem.service;
 
 import com.example.lmssystem.entity.Invoice;
 import com.example.lmssystem.repository.InvoiceRepository;
-import com.example.lmssystem.trnasfer.InvoiceDTO;
+import com.example.lmssystem.transfer.InvoiceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

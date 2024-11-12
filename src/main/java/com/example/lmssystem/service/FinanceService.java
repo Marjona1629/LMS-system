@@ -1,10 +1,10 @@
-package com.example.lmssystem.servise;
+package com.example.lmssystem.service;
 
 import com.example.lmssystem.entity.Finance;
+import com.example.lmssystem.entity.FinanceType;
 import com.example.lmssystem.repository.FinanceRepository;
-import com.example.lmssystem.repository.FinanceTypeRepository;
 import com.example.lmssystem.repository.UserRepository;
-import com.example.lmssystem.trnasfer.auth.FinanceDTO;
+import com.example.lmssystem.transfer.auth.FinanceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,13 +18,11 @@ public class FinanceService {
 
     private final FinanceRepository financeRepository;
     private final UserRepository userRepository;
-    private final FinanceTypeRepository financeTypeRepository;
 
     @Autowired
-    public FinanceService(FinanceRepository financeRepository, UserRepository userRepository, FinanceTypeRepository financeTypeRepository) {
+    public FinanceService(FinanceRepository financeRepository, UserRepository userRepository) {
         this.financeRepository = financeRepository;
         this.userRepository = userRepository;
-        this.financeTypeRepository = financeTypeRepository;
     }
 
     public FinanceDTO createFinance(FinanceDTO financeDTO) {
@@ -35,8 +33,11 @@ public class FinanceService {
     private FinanceDTO getFinanceDTO(FinanceDTO financeDTO, Finance finance) {
         finance.setUser(userRepository.findById(financeDTO.userId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id " + financeDTO.userId())));
-        finance.setType(financeTypeRepository.findByName(financeDTO.type())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Finance type not found: " + financeDTO.type())));
+        try {
+            finance.setType(FinanceType.valueOf(financeDTO.type()));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid FinanceType: " + financeDTO.type());
+        }
         finance.setAmount(financeDTO.amount());
         Finance savedFinance = financeRepository.save(finance);
         return mapToDTO(savedFinance);
@@ -72,7 +73,7 @@ public class FinanceService {
     private FinanceDTO mapToDTO(Finance finance) {
         return new FinanceDTO(
                 finance.getUser().getId(),
-                finance.getType().getName(),
+                finance.getType().name(),
                 finance.getAmount()
         );
     }
