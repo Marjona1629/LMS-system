@@ -1,8 +1,10 @@
 package com.example.lmssystem.entity;
 
 import com.example.lmssystem.entity.*;
+import com.example.lmssystem.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,6 +15,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "groups")
 public class Group {
     @Id
@@ -24,7 +27,7 @@ public class Group {
     private User teacher;
     private LocalTime startTime;
     private Double duration;
-    private String status;
+    private Status status;
     @ManyToOne
     private Course course;
     @ManyToOne

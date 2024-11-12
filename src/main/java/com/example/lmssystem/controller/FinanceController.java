@@ -62,13 +62,13 @@ public class FinanceController {
         );
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteFinance(@PathVariable Long id) {
-        financeService.deleteFinance(id);
-        return ResponseEntity.ok(ResponseData.builder()
-                .message(HttpStatus.OK.toString())
-                .success(true)
-                .build()
-        );
-    }
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<?> deleteFinance(@PathVariable Long id) {
+//        financeService.deleteFinance(id);
+//        return ResponseEntity.ok(ResponseData.builder()
+//                .message(HttpStatus.OK.toString())
+//                .success(true)
+//                .build()
+//        );
+//    }
 }

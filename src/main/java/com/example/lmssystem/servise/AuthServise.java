@@ -40,7 +40,7 @@ public class AuthServise {
        User user =User.builder()
                .branches(List.of(branchRepository.findById(createUserDTO.branchId()).orElseThrow()))
                .deleted(false)
-               .gender(Gender.valueOf(createUserDTO.gender().toUpperCase()))
+               .gender(Gender.valueOf(createUserDTO.gender().toString().toUpperCase()))
                .firstName(createUserDTO.firstName())
                .lastName(createUserDTO.lastName())
                .role(List.of(roleRepository.findByName("USER").orElseThrow()))
@@ -99,7 +99,6 @@ public class AuthServise {
         StringBuilder stringBuilder=new StringBuilder();
         Branch branch1=new Branch();
         for (Long branch : customUserDetails.getBranches()) {
-
             try {
                branch1= branchRepository.findById(branch).orElseThrow();
             }catch (Exception e){}

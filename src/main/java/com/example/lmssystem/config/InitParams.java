@@ -15,7 +15,7 @@
 //import java.util.List;
 //
 //
-//@Component
+////@Component
 //@RequiredArgsConstructor
 //public class InitParams implements CommandLineRunner {
 //    private final UserRepository userRepository;
@@ -46,7 +46,7 @@
 //
 //        User authUser = User.builder()
 //                .phoneNumber("+998900771820")
-//                .passwordSize("8")
+//                .passwordSize("********")
 //                .canLogin(true)
 //                .birthDate(new Date())
 //                .deleted(false)
