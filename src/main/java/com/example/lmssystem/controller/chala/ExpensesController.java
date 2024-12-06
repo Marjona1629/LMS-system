@@ -1,8 +1,8 @@
-package com.example.lmssystem.controller;
+package com.example.lmssystem.controller.chala;
 
 import com.example.lmssystem.entity.Expences;
 import com.example.lmssystem.service.ExpencesService;
-import com.example.lmssystem.transfer.ExpencesDTO;
+import com.example.lmssystem.transfer.invoise_expenses.ExpencesDTO;
 import com.example.lmssystem.transfer.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

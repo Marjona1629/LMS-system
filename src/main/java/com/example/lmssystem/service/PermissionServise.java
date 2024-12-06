@@ -1,10 +1,12 @@
-package com.example.lmssystem.servise;
+package com.example.lmssystem.service;
 
 import com.example.lmssystem.entity.Permission;
 import com.example.lmssystem.entity.Role;
-import com.example.lmssystem.repository.PermittionRepository;
+
+import com.example.lmssystem.repository.PermissionRepository;
 import com.example.lmssystem.repository.RoleRepository;
-import com.example.lmssystem.trnasfer.ResponseData;
+
+import com.example.lmssystem.transfer.ResponseData;
 import com.example.lmssystem.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +15,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PermissionServise {
-    private final PermittionRepository permittionRepository;
+    private final PermissionRepository permittionRepository;
     private final RoleRepository roleRepository;
 
     public ResponseEntity<?> getAll() {

@@ -1,4 +1,4 @@
-package com.example.lmssystem.controller;
+package com.example.lmssystem.controller.chala;
 
 import com.example.lmssystem.entity.User;
 import com.example.lmssystem.service.UserService;
@@ -9,9 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/user")

@@ -1,4 +1,4 @@
-package com.example.lmssystem.controller;
+package com.example.lmssystem.controller.bitganlar;
 
 import com.example.lmssystem.config.security.CustomUserDetails;
 import com.example.lmssystem.service.I18nService;

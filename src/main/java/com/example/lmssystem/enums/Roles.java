@@ -1,4 +1,4 @@
-package com.example.lmssystem.entity;
+package com.example.lmssystem.enums;
 
 public enum Roles {
     ADMIN,

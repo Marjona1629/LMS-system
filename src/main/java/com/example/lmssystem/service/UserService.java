@@ -1,8 +1,7 @@
 package com.example.lmssystem.service;
 
 import com.example.lmssystem.entity.*;
-import com.example.lmssystem.repository.PermissionRepository;
-import com.example.lmssystem.repository.RoleRepository;
+import com.example.lmssystem.enums.Gender;
 import com.example.lmssystem.repository.UserRepository;
 import com.example.lmssystem.transfer.auth.CreateUserDTO;
 import com.example.lmssystem.utils.Utils;
@@ -10,7 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +26,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    private RoleServise roleServise;
+    private BranchService branchService;
+
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -34,15 +40,13 @@ public class UserService {
         }
         return employees.stream()
                 .map(user -> new CreateUserDTO(
-                        user.getId(),
                         user.getFirstName(),
                         user.getLastName(),
                         user.getPhoneNumber(),
-                        null,
-                        null,
-                        null,
-                        null,
-                        user.getRole()
+                        user.getGender() != null ? user.getGender().name() : null,
+                        user.getBirthDate() != null ? user.getBirthDate() : null,
+                        user.getBranches() != null ? user.getBranches().stream().map(Branch::getName).toList() : null,
+                        user.getRole() != null ? user.getRole().stream().map(Role::getName).toList() : null
                 ))
                 .toList();
     }
@@ -57,12 +61,14 @@ public class UserService {
 
     public User addEmployee(User user) {
         validateEmployeeData(user);
-        if (user.getBranch() != null) {
-            Branch validBranch = validateBranch(user.getBranch());
-            user.setBranch(validBranch);
+
+        if (user.getBranches() != null && !user.getBranches().isEmpty()) {
+            List<Branch> validBranches = validateBranches(user.getBranches());
+            user.setBranches(validBranches);
         } else {
-            throw new IllegalArgumentException("User must be assigned to at least one valid branch.");
+            throw new IllegalArgumentException(Utils.getMessage("user.missingBranchAssignment"));
         }
+
         return userRepository.save(user);
     }
 
@@ -85,23 +91,24 @@ public class UserService {
 
     public Optional<User> updateEmployee(Long id, User updatedUser) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User with ID " + id + " not found"));
+                .orElseThrow(() -> new IllegalArgumentException(Utils.getMessage("user.notFound", id)));
 
         updateFieldIfNotNull(updatedUser.getFirstName(), existingUser::setFirstName, "user.firstName.required");
         updateFieldIfNotNull(updatedUser.getLastName(), existingUser::setLastName, "user.lastName.required");
         updateFieldIfNotNull(updatedUser.getPhoneNumber(), existingUser::setPhoneNumber, "user.phoneNumber.required");
 
-        if (updatedUser.getBranch() != null) {
-            Branch validBranch = validateBranch(updatedUser.getBranch());
-            existingUser.setBranch(validBranch);
+        if (updatedUser.getBranches() != null) {
+            List<Branch> validBranches = validateBranches(updatedUser.getBranches());
+            existingUser.setBranches(validBranches);
         }
+
         if (updatedUser.getPassword() != null) {
-            if (updatedUser.getPassword().length() >= 6) {
-                existingUser.setPassword(updatedUser.getPassword());
-            } else {
+            if (updatedUser.getPassword().length() < 6) {
                 throw new IllegalArgumentException(Utils.getMessage("user.password.required"));
             }
+            existingUser.setPassword(updatedUser.getPassword());
         }
+
         updateFieldIfNotNull(updatedUser.getRole(), existingUser::setRole);
         updateFieldIfNotNull(updatedUser.getGender(), existingUser::setGender);
         updateFieldIfNotNull(updatedUser.getBirthDate(), existingUser::setBirthDate);
@@ -144,15 +151,25 @@ public class UserService {
             throw new IllegalArgumentException(Utils.getMessage("user.birthDate.future"));
         }
     }
+
     private boolean isValidPhoneNumber(String phoneNumber) {
         String regex = "^\\+?[1-9]\\d{1,14}$";
         return phoneNumber != null && phoneNumber.matches(regex);
     }
-    private Branch validateBranch(Branch branch) {
-        if (branch == null || !branch.isValid()) {
-            throw new IllegalArgumentException("Invalid branch provided.");
+
+    private List<Branch> validateBranches(List<Branch> branches) {
+        if (branches == null || branches.isEmpty()) {
+            throw new IllegalArgumentException("User must be assigned to at least one valid branch.");
         }
-        return branch;
+
+        List<Branch> validBranches = branches.stream()
+                .filter(branch -> branch != null && branch.isValid())
+                .collect(Collectors.toList());
+
+        if (validBranches.isEmpty()) {
+            throw new IllegalArgumentException("None of the provided branches are valid.");
+        }
+        return validBranches;
     }
 
     private <T> void updateFieldIfNotNull(T value, Consumer<T> setter) {
@@ -160,6 +177,7 @@ public class UserService {
             setter.accept(value);
         }
     }
+
     private void updateFieldIfNotNull(String value, Consumer<String> setter, String errorMessage) {
         if (value != null && !value.trim().isEmpty()) {
             setter.accept(value);
@@ -171,37 +189,92 @@ public class UserService {
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);
     }
+
     public List<User> getActiveTeachers() {
         return userRepository.findByRole_Name("TEACHER");
     }
+
     public CreateUserDTO mapToCreateUserDTO(User user) {
+        List<String> branchNames = (user.getBranches() != null)
+                ? user.getBranches().stream()
+                .map(Branch::getName)
+                .collect(Collectors.toList())
+                : null;
+
+        List<String> roleNames = (user.getRole() != null)
+                ? user.getRole().stream()
+                .map(Role::getName)
+                .collect(Collectors.toList())
+                : null;
+
+        LocalDate birthDate = convertToLocalDate(user.getBirthDate());
         return new CreateUserDTO(
-                user.getId(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getPhoneNumber(),
-                user.getGender(),
-                user.getBirthDate() != null ? user.getBirthDate().toString() : null,
-                user.getBranch() != null ? user.getBranch() : null,
-                user.getPassword(),
-                user.getRole()
+                birthDate != null ? birthDate.toString() : null,
+                user.getBirthDate() != null ? user.getBirthDate() : null,
+                branchNames,
+                roleNames
         );
     }
+
+    public LocalDate convertToLocalDate(Date timestamp) {
+        return timestamp != null ? timestamp.toInstant().atZone(ZoneId.systemDefault()).toLocalDate() : null;
+    }
+
     private CreateUserDTO convertToCreateUserDTO(User user) {
+        List<String> branchNames = (user.getBranches() != null)
+                ? user.getBranches().stream()
+                .map(Branch::getName)
+                .collect(Collectors.toList())
+                : null;
+
+        List<String> roleNames = (user.getRole() != null)
+                ? user.getRole().stream()
+                .map(Role::getName)
+                .collect(Collectors.toList())
+                : null;
+
         return new CreateUserDTO(
-                user.getId(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getPhoneNumber(),
-                user.getGender(),
-                user.getBirthDate() != null ? user.getBirthDate().toString() : null,
-                user.getBranch() != null ? user.getBranch() : null,
-                user.getPassword(),
-                user.getRole()
+                user.getGender() != null ? user.getGender().name() : null,
+                user.getBirthDate() != null ? user.getBirthDate() : null,
+                branchNames,
+                roleNames
         );
     }
 
     public List<User> getOtherActiveEmployees() {
         return userRepository.findByRole_NameNotIn(List.of("TEACHER", "ADMIN", "STUDENT"));
+    }
+
+    public User convertToUser(CreateUserDTO createUserDTO) {
+        List<Branch> allBranches = branchService.findAll();
+        List<Role> allRoles = roleServise.findAll();
+
+        Gender gender = Gender.valueOf(createUserDTO.gender().toUpperCase());
+
+        List<Branch> branches = allBranches.stream()
+                .filter(branch -> createUserDTO.branchNames().contains(branch.getName()))
+                .collect(Collectors.toList());
+        List<Role> roles = allRoles.stream()
+                .filter(role -> createUserDTO.roles().contains(role.getName()))
+                .collect(Collectors.toList());
+
+        return User.builder()
+                .firstName(createUserDTO.firstName())
+                .lastName(createUserDTO.lastName())
+                .phoneNumber(createUserDTO.phoneNumber())
+                .gender(gender)
+                .birthDate(createUserDTO.birthDate())
+                .branches(branches)
+                .role(roles)
+                .canLogin(true)
+                .deleted(false)
+                .locale("en")
+                .build();
     }
 }

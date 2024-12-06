@@ -19,11 +19,13 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public String handleAccessDeniedException(AccessDeniedException ex) {
+//        System.out.println(ex.getMessage()+"forbidden");
         return "Ushbu amalni bajarishga sizning huquqingiz yo'q";
     }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<?> handleAccessDeniedException(BadRequestException ex) {
+//        System.out.println(ex.getMessage()+"badrequest");
         AppErrorResponse errorResponse = new AppErrorResponse();
         errorResponse.setStatus(ex.getBody().getStatus());
         errorResponse.setError(ex.getReason());
@@ -34,6 +36,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
+//        System.out.println(ex.getMessage()+"bad credentials");
         AppErrorResponse errorResponse = new AppErrorResponse(HttpStatus.UNAUTHORIZED.value(), ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
 
@@ -41,6 +44,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleGlobalException(Exception ex, WebRequest request) {
+//        System.out.println(ex.getMessage()+"exeption");
         log.error(ex.getMessage(), ex);
         AppErrorResponse errorResponse = new AppErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "An error occurred");
         return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

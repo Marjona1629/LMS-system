@@ -1,6 +1,6 @@
-package com.example.lmssystem.controller;
+package com.example.lmssystem.controller.bitganlar;
 
-import com.example.lmssystem.servise.PermissionServise;
+import com.example.lmssystem.service.PermissionServise;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -1,6 +1,5 @@
-package com.example.lmssystem.controller;
+package com.example.lmssystem.controller.chala;
 
-import com.example.lmssystem.entity.Branch;
 import com.example.lmssystem.entity.User;
 import com.example.lmssystem.service.BranchService;
 import com.example.lmssystem.service.UserService;
@@ -33,15 +32,13 @@ public class EmployeeController {
     public ResponseData showEmployees() {
         List<CreateUserDTO> employees = userService.getAllEmployees().stream()
                 .map(dto -> new CreateUserDTO(
-                        dto.id(),
                         dto.firstName(),
                         dto.lastName(),
                         dto.phoneNumber(),
                         dto.gender(),
                         dto.birthDate(),
-                        dto.branch(),
-                        null,
-                        dto.role()
+                        dto.branchNames(),
+                        dto.roles()
                 ))
                 .collect(Collectors.toList());
 
@@ -51,6 +48,7 @@ public class EmployeeController {
                     .message(Utils.getMessage("user.noEmployeesFound"))
                     .build();
         }
+
         return ResponseData.builder()
                 .success(true)
                 .message(Utils.getMessage("employees_retrieved_success"))
@@ -76,7 +74,7 @@ public class EmployeeController {
     @PostMapping
     @SneakyThrows
     public ResponseData addEmployee(@RequestBody CreateUserDTO createUserDTO) {
-        User user = convertToUser(createUserDTO);
+        User user = userService.convertToUser(createUserDTO);
         User addedEmployee = userService.addEmployee(user);
 
         return ResponseData.builder()
@@ -112,7 +110,7 @@ public class EmployeeController {
     @PutMapping("/{id}")
     @SneakyThrows
     public ResponseEntity<ResponseData> changeEmployee(@PathVariable Long id, @RequestBody CreateUserDTO updateUserDTO) {
-        User updatedUser = convertToUser(updateUserDTO);
+        User updatedUser = userService.convertToUser(updateUserDTO);
         Optional<User> updatedEmployee = userService.updateEmployee(id, updatedUser);
 
         if (updatedEmployee.isPresent()) {
@@ -152,22 +150,5 @@ public class EmployeeController {
                             .data(null)
                             .build());
         }
-    }
-
-    private User convertToUser(CreateUserDTO createUserDTO) {
-        return User.builder()
-                .firstName(createUserDTO.firstName())
-                .lastName(createUserDTO.lastName())
-                .phoneNumber(createUserDTO.phoneNumber())
-                .gender(createUserDTO.gender())
-                .birthDate(createUserDTO.birthDate() != null ? java.sql.Date.valueOf(createUserDTO.birthDate()) : null)
-                .branch(fetchBranchById(createUserDTO.branch().getId()))
-                .password(createUserDTO.password())
-                .role(createUserDTO.role())
-                .build();
-    }
-    private Branch fetchBranchById(Long branchId) {
-        return branchService.getBranchById(branchId)
-                .orElseThrow(() -> new IllegalArgumentException("Branch with ID " + branchId + " not found"));
     }
 }

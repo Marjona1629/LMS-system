@@ -14,9 +14,5 @@ public class Branch {
     private String name;
     @OneToOne
     private Location location;
-    private boolean active;
-
-    public boolean isValid() {
-        return active;
-    }
+    private boolean valid;
 }

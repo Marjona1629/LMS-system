@@ -2,7 +2,7 @@ package com.example.lmssystem.service;
 
 import com.example.lmssystem.entity.Expences;
 import com.example.lmssystem.repository.ExpencesRepository;
-import com.example.lmssystem.transfer.ExpencesDTO;
+import com.example.lmssystem.transfer.invoise_expenses.ExpencesDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

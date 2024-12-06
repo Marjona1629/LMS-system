@@ -1,12 +1,13 @@
-package com.example.lmssystem.controller;
+package com.example.lmssystem.controller.chala;
 
 import com.example.lmssystem.entity.Invoice;
 import com.example.lmssystem.service.InvoiceService;
+import com.example.lmssystem.transfer.invoise_expenses.InvoiceUpdateDTO;
 import com.example.lmssystem.transfer.ResponseData;
-import com.example.lmssystem.transfer.InvoiceDTO;
+import com.example.lmssystem.transfer.invoise_expenses.InvoiceCreateDTO;
 
+import com.example.lmssystem.transfer.invoise_expenses.InvoiceDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,8 +21,8 @@ public class InvoiceController {
   private final InvoiceService invoiceService;
 
     @PostMapping
-    public ResponseEntity<?> createInvoice(@RequestBody InvoiceDTO invoiceDTO) {
-        Invoice newInvoice = invoiceService.saveInvoice(invoiceDTO);
+    public ResponseEntity<?> createInvoice(@RequestBody InvoiceCreateDTO invoiceCreateDTO) {
+        Invoice newInvoice = invoiceService.saveInvoice(invoiceCreateDTO);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ResponseData.builder()
                         .message("Invoice created successfully")
@@ -32,7 +33,7 @@ public class InvoiceController {
 
     @GetMapping
     public ResponseEntity<?> getAllInvoices() {
-        List<Invoice> invoices = invoiceService.getAllInvoices();
+        List<InvoiceDTO> invoices = invoiceService.getAllInvoices();
         return ResponseEntity.ok(ResponseData.builder()
                 .message("Invoices retrieved successfully")
                 .data(invoices)
@@ -42,7 +43,7 @@ public class InvoiceController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getInvoiceById(@PathVariable Long id) {
-        Invoice invoice = invoiceService.getInvoiceById(id);
+        InvoiceDTO invoice = invoiceService.getInvoiceById(id);
         return ResponseEntity.ok(ResponseData.builder()
                 .message("Invoice found with id: " + id)
                 .data(invoice)
@@ -51,8 +52,8 @@ public class InvoiceController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateInvoice(@PathVariable Long id, @RequestBody InvoiceDTO invoiceDTO) {
-        Invoice updatedInvoice = invoiceService.updateInvoice(id, invoiceDTO);
+    public ResponseEntity<?> updateInvoice(@PathVariable Long id, @RequestBody InvoiceUpdateDTO invoiceCreateDTO) {
+        Invoice updatedInvoice = invoiceService.updateInvoice(id, invoiceCreateDTO.amount(),invoiceCreateDTO.status());
         return ResponseEntity.ok(ResponseData.builder()
                 .message("Invoice updated successfully")
                 .data(updatedInvoice)

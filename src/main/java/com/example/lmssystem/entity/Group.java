@@ -1,6 +1,5 @@
 package com.example.lmssystem.entity;
 
-import com.example.lmssystem.entity.*;
 import com.example.lmssystem.enums.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -15,8 +15,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Table(name = "groups")
+@Builder
 public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +25,7 @@ public class Group {
     private String description;
     @ManyToOne
     private User teacher;
-    private LocalTime startTime;
+    private Timestamp startTime;
     private Double duration;
     private Status status;
     @ManyToOne

@@ -10,7 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -32,20 +32,27 @@ public class User implements UserDetails {
     private String firstName;
     private String lastName;
     private String password;
-    private String passwordSize;
+    private Integer passwordSize;
     private String imageUrl;
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> role;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "branch_id")
-    private Branch branch;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Branch> branches;
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private Boolean canLogin;
     @Temporal(value = TemporalType.TIMESTAMP)
-    private Date birthDate;
+    private Timestamp birthDate;
     private Boolean deleted;
     private String locale="en";
+
+    public List<Long> getBranchess(){
+        List<Long> branchess = new ArrayList<>();
+        for (Branch branch : branches) {
+            branchess.add(branch.getId());
+        }
+        return branchess;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -63,6 +70,7 @@ public class User implements UserDetails {
     public String getPassword() {
         return password;
     }
+
     @Override
     public String getUsername() {
         return username;

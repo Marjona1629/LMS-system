@@ -3,65 +3,65 @@ package com.example.lmssystem.service;
 import com.example.lmssystem.config.security.CustomUserDetails;
 import com.example.lmssystem.config.security.JwtProvider;
 import com.example.lmssystem.entity.User;
-import com.example.lmssystem.repository.BranchRepository;
+import com.example.lmssystem.enums.Gender;
 import com.example.lmssystem.repository.RoleRepository;
 import com.example.lmssystem.repository.UserRepository;
 import com.example.lmssystem.transfer.ResponseData;
 import com.example.lmssystem.transfer.auth.CreateUserDTO;
-import com.example.lmssystem.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
 public class AuthServise {
     private final RoleRepository roleRepository;
-    private final BranchRepository branchRepository;
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtProvider jwtProvider;
-    private final AuthenticationManager authenticationManager;
+    private final Random random = new Random();
 
     public ResponseEntity<ResponseData> createUser(CreateUserDTO createUserDTO) throws Exception {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-       User user =User.builder()
-               .branch(createUserDTO.branch())
+        User user =User.builder()
+               .branches(new ArrayList<>())
                .deleted(false)
-               .gender(createUserDTO.gender())
+               .gender(Gender.valueOf(createUserDTO.gender()))
                .firstName(createUserDTO.firstName())
                .lastName(createUserDTO.lastName())
                .role(List.of(roleRepository.findByName("USER").orElseThrow()))
                .locale("en")
-               .birthDate(sdf.parse(createUserDTO.birthDate()))
+               .birthDate(createUserDTO.birthDate())
                .canLogin(true)
                .phoneNumber(createUserDTO.phoneNumber())
                .build();
-
-       User save=setUserNameAndPassword(user);
+        setUserNameAndPassword(user);
         return ResponseEntity.status(200).body(
                ResponseData.builder()
-                       .data(save)
-                       .message(Utils.getMessage("userSaved"))
+                       .data(userRepository.save(user))
+                       .message("userSaved")
                        .success(true)
                        .build()
        );
     }
-    private User setUserNameAndPassword(User user1){
-        String firstName = user1.getFirstName();
-        String lastName = user1.getLastName();
-        User user = userRepository.save(user1);
-        user.setPassword(firstName+"_"+lastName+"_"+user.getId());
-        user.setUsername(firstName+"_"+lastName+"_"+user.getId());
-        user.setPasswordSize(user.getPassword().length());
-        userRepository.set(user.getPassword(),user.getUsername(),user.getPasswordSize(),user.getId());
-        return user;
+    private void setUserNameAndPassword(User user){
+        while (true){
+            try {
+                user.setUsername(user.getFirstName()+"_"+user.getLastName()+"_"+random.nextInt(10000));
+                user.setPassword(passwordEncoder.encode(user.getUsername()));
+                user.setPasswordSize(user.getUsername().length());
+            }catch (Exception e){
+            }
+            break;
+        }
     }
 
     public ResponseEntity<?> signIn(String username, String password) {
@@ -80,6 +80,24 @@ public class AuthServise {
                 .success(true)
                 .message("loginSuccess")
                 .data(token)
+                .build()
+        );
+    }
+
+    public ResponseEntity<?> getUser(Long id) {
+        return ResponseEntity.status(200).body(ResponseData.builder()
+                .success(true)
+                .message("Success")
+                .data(userRepository.findById(id).orElseThrow())
+                .build()
+        );
+    }
+
+    public ResponseEntity<?> getUsers() {
+        return ResponseEntity.status(200).body(ResponseData.builder()
+                .success(true)
+                .message("Success")
+                .data(userRepository.findAll())
                 .build()
         );
     }

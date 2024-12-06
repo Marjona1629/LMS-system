@@ -1,6 +1,7 @@
-package com.example.lmssystem.controller;
+package com.example.lmssystem.controller.bitganlar;
 
-import com.example.lmssystem.servise.RoleServise;
+import com.example.lmssystem.service.RoleServise;
+import com.example.lmssystem.transfer.role_permission.RoleDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,15 +25,9 @@ public class RoleController {
     public ResponseEntity<?> createRole(@RequestBody String  name, List<Long> permissions) {
         return roleServise.createRole(name,permissions);
     }
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<?> deleteRole(@PathVariable Long id) {
-//        roleServise.deleteRoleById(id);
-//        return ResponseEntity.status(200).body(
-//                ResponseData.builder()
-//                        .success(true)
-//                        .data(null)
-//                        .message(Utils.getMessage("success"))
-//                        .build()
-//        );
-//    }
+    @PutMapping
+    public ResponseEntity<?> rolePlusPermission(@RequestBody RoleDTO role) {
+        return roleServise.addPermission(role);
+    }
+
 }

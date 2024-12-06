@@ -1,6 +1,4 @@
-package com.example.lmssystem.transfer;
-
-import com.example.lmssystem.entity.Category;
+package com.example.lmssystem.transfer.invoise_expenses;
 
 import java.time.LocalDateTime;
 

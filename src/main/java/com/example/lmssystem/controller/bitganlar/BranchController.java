@@ -1,10 +1,9 @@
-package com.example.lmssystem.controller;
+package com.example.lmssystem.controller.bitganlar;
 
 import com.example.lmssystem.entity.Branch;
 import com.example.lmssystem.repository.BranchRepository;
-import com.example.lmssystem.servise.BranchService;
-import com.example.lmssystem.trnasfer.BranchDTO;
-import com.example.lmssystem.trnasfer.ResponseData;
+import com.example.lmssystem.service.BranchService;
+import com.example.lmssystem.transfer.ResponseData;
 import com.example.lmssystem.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +21,7 @@ public class BranchController {
         return ResponseEntity.status(200).body(
                 ResponseData.builder()
                         .success(true)
-                        .data(branchService.getAllBranches())
+//                        .data(branchService.getAllBranches())
                         .message(Utils.getMessage("success"))
                         .build()
         );

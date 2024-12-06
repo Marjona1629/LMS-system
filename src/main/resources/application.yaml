@@ -1,9 +1,10 @@
 spring:
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/lms_system}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/lmms}
     username: ${DATABASE_USER:postgres}
     password: ${DATABASE_PASSWORD:root123}
     driver-class-name: org.postgresql.Driver
+
 
 
   messages:
@@ -12,8 +13,9 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update
-    open-in-view: true
+      ddl-auto: create
+#    open-in-view: true
+#    show-sql: true
   servlet:
     multipart:
       max-file-size: 5MB
