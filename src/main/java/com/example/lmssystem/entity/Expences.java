@@ -16,7 +16,7 @@ public class Expences {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String Name;
+    private String name;
     private LocalDateTime date;
     @ManyToOne
     private Category category;

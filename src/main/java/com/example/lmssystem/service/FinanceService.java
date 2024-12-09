@@ -36,6 +36,12 @@ public class FinanceService {
         }
         return null;
     }
+    public FinanceType createFinanceType(String name) {
+        FinanceType financetype = new FinanceType();
+        financetype.setName(name);
+        return finaceTypeRepository.save(financetype);
+    }
+
 
     public List<Finance> getAllFinances() {
         return financeRepository.findAll();

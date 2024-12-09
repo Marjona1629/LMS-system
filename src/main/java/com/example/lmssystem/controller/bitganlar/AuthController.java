@@ -19,10 +19,10 @@ public class AuthController {
         return authServise.createUser(createUserDTO);
     }
 
-    @PostMapping("/sign-in")
-    public ResponseEntity<?> signIn( String username, String password) {
-        return authServise.signIn(username, password);
-    }
+        @PostMapping("/sign-in")
+        public ResponseEntity<?> signIn(@RequestParam String username,  @RequestParam String password) {
+            return authServise.signIn(username, password);
+        }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getUser(@PathVariable Long id) {
