@@ -1,4 +1,4 @@
-package com.example.lmssystem.controller.chala;
+package com.example.lmssystem.controller.bitganlar;
 
 import com.example.lmssystem.service.AuthServise;
 import com.example.lmssystem.transfer.auth.CreateUserDTO;

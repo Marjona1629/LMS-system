@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -47,11 +46,11 @@ public class User implements UserDetails {
     private String locale="en";
 
     public List<Long> getBranchess(){
-        List<Long> branchess = new ArrayList<>();
-        for (Branch branch : branches) {
-            branchess.add(branch.getId());
+        List<Long> branches = new ArrayList<>();
+        for (Branch branch : this.branches) {
+            branches.add(branch.getId());
         }
-        return branchess;
+        return branches;
     }
 
     @Override

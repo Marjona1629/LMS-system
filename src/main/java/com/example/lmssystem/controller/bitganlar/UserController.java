@@ -1,4 +1,4 @@
-package com.example.lmssystem.controller.chala;
+package com.example.lmssystem.controller.bitganlar;
 
 import com.example.lmssystem.entity.User;
 import com.example.lmssystem.service.UserService;

@@ -1,7 +1,6 @@
-package com.example.lmssystem.controller;
+package com.example.lmssystem.controller.bitganlar;
 
 import com.example.lmssystem.entity.User;
-import com.example.lmssystem.service.BranchService;
 import com.example.lmssystem.service.UserService;
 import com.example.lmssystem.transfer.ResponseData;
 import com.example.lmssystem.transfer.auth.CreateUserDTO;
