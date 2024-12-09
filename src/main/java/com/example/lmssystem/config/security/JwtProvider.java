@@ -68,7 +68,7 @@ public class JwtProvider {
         final String username = extractUsername(token);
 
         if (isTokenExpired(token)) {
-            throw new TokenExpiredException();
+            throw new TokenExpiredException(token);
         }
 
         if (!username.equals(userDetails.getUsername())) {

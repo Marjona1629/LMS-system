@@ -1,9 +1,9 @@
-package com.example.lmssystem.controller.chala;
+package com.example.lmssystem.controller.bitganlar;
 
 import com.example.lmssystem.entity.User;
-import com.example.lmssystem.service.BranchService;
 import com.example.lmssystem.service.UserService;
 import com.example.lmssystem.transfer.ResponseData;
+import com.example.lmssystem.transfer.auth.CreateEmployeeDTO;
 import com.example.lmssystem.transfer.auth.CreateUserDTO;
 import com.example.lmssystem.utils.Utils;
 import lombok.SneakyThrows;
@@ -20,8 +20,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/employees")
 public class EmployeeController {
 
-    @Autowired
-    private BranchService branchService;
     @Autowired
     private UserService userService;
     public EmployeeController(UserService userService) {
@@ -73,8 +71,8 @@ public class EmployeeController {
 
     @PostMapping
     @SneakyThrows
-    public ResponseData addEmployee(@RequestBody CreateUserDTO createUserDTO) {
-        User user = userService.convertToUser(createUserDTO);
+    public ResponseData addEmployee(@RequestBody CreateEmployeeDTO createEmployeeDTO) {
+        User user = userService.convertToUser(createEmployeeDTO);
         User addedEmployee = userService.addEmployee(user);
 
         return ResponseData.builder()
@@ -86,10 +84,10 @@ public class EmployeeController {
 
     @GetMapping("/search")
     public List<CreateUserDTO> searchEmployees(
-            @RequestParam(required = false) Long id,
-            @RequestParam(required = false) String firstName,
-            @RequestParam(required = false) String lastName,
-            @RequestParam(required = false) String phoneNumber) {
+            @RequestParam(value = "id", required = false) Long id,
+            @RequestParam(value = "firstName", required = false) String firstName,
+            @RequestParam(value = "lastName", required = false) String lastName,
+            @RequestParam(value = "phoneNumber", required = false) String phoneNumber) {
         return userService.searchEmployees(id, firstName, lastName, phoneNumber);
     }
 
@@ -111,21 +109,13 @@ public class EmployeeController {
     @SneakyThrows
     public ResponseEntity<ResponseData> changeEmployee(@PathVariable Long id, @RequestBody CreateUserDTO updateUserDTO) {
         User updatedUser = userService.convertToUser(updateUserDTO);
-        Optional<User> updatedEmployee = userService.updateEmployee(id, updatedUser);
+        User updatedEmployee = userService.updateEmployee(id, updatedUser);
 
-        if (updatedEmployee.isPresent()) {
-            return ResponseEntity.ok(ResponseData.builder()
-                    .success(true)
-                    .message(Utils.getMessage("employee_updated_success"))
-                    .data(updatedEmployee.get())
-                    .build());
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseData.builder()
-                    .success(false)
-                    .message(Utils.getMessage("employee_not_found"))
-                    .data(null)
-                    .build());
-        }
+        return ResponseEntity.ok(ResponseData.builder()
+                .success(true)
+                .message(Utils.getMessage("employee_updated_success"))
+                .data(updatedEmployee)
+                .build());
     }
 
     @GetMapping("/other-active")

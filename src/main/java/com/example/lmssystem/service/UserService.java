@@ -2,18 +2,18 @@ package com.example.lmssystem.service;
 
 import com.example.lmssystem.entity.*;
 import com.example.lmssystem.enums.Gender;
+import com.example.lmssystem.exception.UserServiceException;
 import com.example.lmssystem.repository.UserRepository;
+import com.example.lmssystem.transfer.auth.CreateEmployeeDTO;
 import com.example.lmssystem.transfer.auth.CreateUserDTO;
 import com.example.lmssystem.utils.Utils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +26,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
     private RoleServise roleServise;
+    @Autowired
     private BranchService branchService;
 
     public UserService(UserRepository userRepository) {
@@ -34,9 +36,9 @@ public class UserService {
     }
 
     public List<CreateUserDTO> getAllEmployees() {
-        List<User> employees = userRepository.findAll();
+        List<User> employees = userRepository.findAllNonDeleted();
         if (employees.isEmpty()) {
-            throw new IllegalStateException(Utils.getMessage("user.noEmployeesFound"));
+            throw new UserServiceException(Utils.getMessage("user.noEmployeesFound"));
         }
         return employees.stream()
                 .map(user -> new CreateUserDTO(
@@ -54,7 +56,7 @@ public class UserService {
     public Optional<User> getEmployeeById(Long id) {
         Optional<User> employee = userRepository.findById(id);
         if (employee.isEmpty()) {
-            throw new IllegalArgumentException(Utils.getMessage("user.employee.notFound", id));
+            throw new UserServiceException(Utils.getMessage("user.employee.notFound", id));
         }
         return employee;
     }
@@ -62,15 +64,30 @@ public class UserService {
     public User addEmployee(User user) {
         validateEmployeeData(user);
 
+        if (user.getBranches() == null) {
+            user.setBranches(new ArrayList<>());
+        }
+        if (user.getRole() != null && !user.getRole().isEmpty()) {
+            List<Role> validRoles = user.getRole().stream()
+                    .map(role -> roleServise.findRoleByName(role.getName()))
+                    .collect(Collectors.toList());
+            user.setRole(validRoles);
+        }
+
         if (user.getBranches() != null && !user.getBranches().isEmpty()) {
             List<Branch> validBranches = validateBranches(user.getBranches());
             user.setBranches(validBranches);
-        } else {
-            throw new IllegalArgumentException(Utils.getMessage("user.missingBranchAssignment"));
         }
-
         return userRepository.save(user);
     }
+
+
+
+    private Branch findBranchByName(String branchName) {
+        return (Branch) branchService.findByName(branchName)
+                .orElseThrow(() -> new UserServiceException("Branch not found: " + branchName));
+    }
+
 
     public List<CreateUserDTO> searchEmployees(Long id, String firstName, String lastName, String phoneNumber) {
         List<User> users = userRepository.searchEmployees(id, firstName, lastName, phoneNumber);
@@ -85,35 +102,43 @@ public class UserService {
             userRepository.softDeleteById(id);
             return true;
         } else {
-            throw new IllegalArgumentException(Utils.getMessage("user.employee.notFound", id));
+            throw new UserServiceException(Utils.getMessage("user.employee.notFound", id));
         }
     }
 
-    public Optional<User> updateEmployee(Long id, User updatedUser) {
+    public User updateEmployee(Long id, User updatedUser) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(Utils.getMessage("user.notFound", id)));
+                .orElseThrow(() -> new UserServiceException(Utils.getMessage("user.notFound", id)));
 
-        updateFieldIfNotNull(updatedUser.getFirstName(), existingUser::setFirstName, "user.firstName.required");
-        updateFieldIfNotNull(updatedUser.getLastName(), existingUser::setLastName, "user.lastName.required");
-        updateFieldIfNotNull(updatedUser.getPhoneNumber(), existingUser::setPhoneNumber, "user.phoneNumber.required");
+        if (updatedUser.getFirstName() != null) {
+            existingUser.setFirstName(updatedUser.getFirstName());
+        }
+        if (updatedUser.getLastName() != null) {
+            existingUser.setLastName(updatedUser.getLastName());
+        }
+        if (updatedUser.getPhoneNumber() != null) {
+            existingUser.setPhoneNumber(updatedUser.getPhoneNumber());
+        }
 
-        if (updatedUser.getBranches() != null) {
+        if (updatedUser.getBranches() != null && !updatedUser.getBranches().isEmpty()) {
             List<Branch> validBranches = validateBranches(updatedUser.getBranches());
             existingUser.setBranches(validBranches);
         }
 
-        if (updatedUser.getPassword() != null) {
-            if (updatedUser.getPassword().length() < 6) {
-                throw new IllegalArgumentException(Utils.getMessage("user.password.required"));
-            }
+        if (updatedUser.getPassword() != null && updatedUser.getPassword().length() >= 6) {
             existingUser.setPassword(updatedUser.getPassword());
         }
+        if (updatedUser.getRole() != null) {
+            existingUser.setRole(updatedUser.getRole());
+        }
+        if (updatedUser.getGender() != null) {
+            existingUser.setGender(updatedUser.getGender());
+        }
+        if (updatedUser.getBirthDate() != null) {
+            existingUser.setBirthDate(updatedUser.getBirthDate());
+        }
 
-        updateFieldIfNotNull(updatedUser.getRole(), existingUser::setRole);
-        updateFieldIfNotNull(updatedUser.getGender(), existingUser::setGender);
-        updateFieldIfNotNull(updatedUser.getBirthDate(), existingUser::setBirthDate);
-
-        return Optional.of(userRepository.save(existingUser));
+        return userRepository.save(existingUser);
     }
 
     public List<User> getArchivedEmployees() {
@@ -122,33 +147,33 @@ public class UserService {
 
     private void validateEmployeeData(User user) {
         if (user.getFirstName() == null || user.getFirstName().isEmpty()) {
-            throw new IllegalArgumentException(Utils.getMessage("user.firstName.required"));
+            throw new UserServiceException(Utils.getMessage("user.firstName.required"));
         }
         if (user.getLastName() == null || user.getLastName().isEmpty()) {
-            throw new IllegalArgumentException(Utils.getMessage("user.lastName.required"));
+            throw new UserServiceException(Utils.getMessage("user.lastName.required"));
         }
         if (user.getPhoneNumber() == null || user.getPhoneNumber().isEmpty()) {
-            throw new IllegalArgumentException(Utils.getMessage("user.phone.required"));
+            throw new UserServiceException(Utils.getMessage("user.phone.required"));
         }
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
-            throw new IllegalArgumentException(Utils.getMessage("user.password.required"));
+            throw new UserServiceException(Utils.getMessage("user.password.required"));
         }
         if (user.getRole() == null || user.getRole().isEmpty()) {
-            throw new IllegalArgumentException(Utils.getMessage("user.role.required"));
+            throw new UserServiceException(Utils.getMessage("user.role.required"));
         }
         if (user.getBirthDate() == null) {
-            throw new IllegalArgumentException(Utils.getMessage("user.birthDate.required"));
+            throw new UserServiceException(Utils.getMessage("user.birthDate.required"));
         }
         if (user.getGender() == null) {
-            throw new IllegalArgumentException(Utils.getMessage("user.gender.required"));
+            throw new UserServiceException(Utils.getMessage("user.gender.required"));
         }
 
         if (!isValidPhoneNumber(user.getPhoneNumber())) {
-            throw new IllegalArgumentException(Utils.getMessage("user.phone.invalid"));
+            throw new UserServiceException(Utils.getMessage("user.phone.invalid"));
         }
 
         if (user.getBirthDate().after(new Date())) {
-            throw new IllegalArgumentException(Utils.getMessage("user.birthDate.future"));
+            throw new UserServiceException(Utils.getMessage("user.birthDate.future"));
         }
     }
 
@@ -159,16 +184,17 @@ public class UserService {
 
     private List<Branch> validateBranches(List<Branch> branches) {
         if (branches == null || branches.isEmpty()) {
-            throw new IllegalArgumentException("User must be assigned to at least one valid branch.");
+            throw new UserServiceException("User must be assigned to at least one valid branch.");
         }
 
         List<Branch> validBranches = branches.stream()
                 .filter(branch -> branch != null && branch.isValid())
-                .collect(Collectors.toList());
+                .toList();
 
         if (validBranches.isEmpty()) {
-            throw new IllegalArgumentException("None of the provided branches are valid.");
+            throw new UserServiceException("None of the provided branches are valid.");
         }
+
         return validBranches;
     }
 
@@ -182,7 +208,7 @@ public class UserService {
         if (value != null && !value.trim().isEmpty()) {
             setter.accept(value);
         } else if (errorMessage != null) {
-            throw new IllegalArgumentException(Utils.getMessage(errorMessage));
+            throw new UserServiceException(Utils.getMessage(errorMessage));
         }
     }
 
@@ -270,6 +296,36 @@ public class UserService {
                 .phoneNumber(createUserDTO.phoneNumber())
                 .gender(gender)
                 .birthDate(createUserDTO.birthDate())
+                .branches(branches)
+                .role(roles)
+                .canLogin(true)
+                .deleted(false)
+                .locale("en")
+                .build();
+    }
+
+    public User convertToUser(CreateEmployeeDTO createEmployeeDTO) {
+        List<Branch> allBranches = branchService.findAll();
+        List<Role> allRoles = roleServise.findAll();
+
+        Gender gender = Gender.valueOf(createEmployeeDTO.gender().toUpperCase());
+
+        List<Branch> branches = allBranches.stream()
+                .filter(branch -> createEmployeeDTO.branchNames().contains(branch.getName()))
+                .collect(Collectors.toList());
+        List<Role> roles = allRoles.stream()
+                .filter(role -> createEmployeeDTO.roles().contains(role.getName()))
+                .collect(Collectors.toList());
+        System.out.println("Filtered Roles: " + roles);
+
+        return User.builder()
+                .username(createEmployeeDTO.username())
+                .password(createEmployeeDTO.password())
+                .firstName(createEmployeeDTO.firstName())
+                .lastName(createEmployeeDTO.lastName())
+                .phoneNumber(createEmployeeDTO.phoneNumber())
+                .gender(gender)
+                .birthDate(createEmployeeDTO.birthDate())
                 .branches(branches)
                 .role(roles)
                 .canLogin(true)

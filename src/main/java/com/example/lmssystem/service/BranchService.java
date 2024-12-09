@@ -21,4 +21,8 @@ public class BranchService {
     public List<Branch> findAll() {
         return branchRepository.findAll();
     }
+
+    public Optional<Object> findByName(String branchName) {
+        return branchRepository.findByName(branchName);
+    }
 }
