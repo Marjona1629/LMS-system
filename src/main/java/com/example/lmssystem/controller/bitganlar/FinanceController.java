@@ -1,6 +1,7 @@
 package com.example.lmssystem.controller.bitganlar;
 
 import com.example.lmssystem.entity.Finance;
+import com.example.lmssystem.entity.FinanceType;
 import com.example.lmssystem.service.FinanceService;
 import com.example.lmssystem.transfer.ResponseData;
 import com.example.lmssystem.transfer.finance.FinanceCreateDTO;
@@ -15,7 +16,7 @@ import java.util.List;
 @RequestMapping("/finance")
 @RequiredArgsConstructor
 public class FinanceController {
-    private final FinanceService financeService;
+   private final FinanceService financeService;
 
     @PostMapping
     public ResponseEntity<?> createFinance(@RequestBody FinanceCreateDTO finance) {
@@ -23,6 +24,16 @@ public class FinanceController {
         return ResponseEntity.ok(ResponseData.builder()
                 .message(HttpStatus.OK.toString())
                 .data(createdFinance)
+                .success(true)
+                .build()
+        );
+    }
+    @PostMapping("/create-type")
+    public ResponseEntity<?> createType(@RequestParam String name){
+        FinanceType financeType = financeService.createFinanceType(name);
+        return ResponseEntity.status(200).body(ResponseData.builder()
+                .message(HttpStatus.OK.toString())
+                .data(financeType)
                 .success(true)
                 .build()
         );

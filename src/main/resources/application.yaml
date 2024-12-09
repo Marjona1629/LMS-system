@@ -30,7 +30,6 @@ application:
 
 
 
-
 springdoc:
   swagger-ui:
     doc-expansion: none
@@ -38,6 +37,7 @@ springdoc:
 server:
   servlet:
     context-path: /api
+  port: 8080
 git:
   token: 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
   username: AbbosRejabov2006
